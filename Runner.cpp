@@ -1,0 +1,170 @@
+#include "Runner.h"
+
+#include <algorithm>
+#include <fstream>
+#include <memory>
+#include <vector>
+
+#include "Config.h"
+#include "ConfigLoader.h"
+#include "Constants.h"
+#include "Dynp.h"
+#include "FileManager.h"
+#include "Graph.h"
+#include "K22Store.h"
+
+int Runner::addTrivialEdges(Graph &adj, Logs &logs)  // TODO! becnchmark the other version where
+                                                     // it picks all the edges in random order
+{
+  int m = adj.m;
+  int n = adj.n;
+  int addedEdges = 0;
+  int totalEdges = 0;
+  for (int u = 0; u < m; ++u)
+  {
+    for (int v = 0; v < n; ++v)
+    {
+      if (adj[u][v] == 1)
+      {
+        ++totalEdges;
+      }
+      else if (!kstStore_->createsKst(adj, u, v))
+      {
+        adj[u][v] = 1;
+        ++addedEdges;
+      }
+    }
+  }
+  totalEdges += addedEdges;
+  logs.add(totalEdges);
+  return totalEdges;
+}
+
+std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, int t)
+{
+  switch (type)
+  {
+    case 0:
+      return std::make_unique<Dynp>(m, n, s, t);
+    default:
+      throw std::invalid_argument("Unsupported Probabilities type");
+  }
+}
+std::unique_ptr<KstStore> Runner::makeKstStore(int s, int t)
+{
+  if (s == 2 && t == 2)
+  {
+    return std::make_unique<K22Store>();
+  }
+  // else if (s == 3 && t == 3)
+  // {
+  //   return std::make_unique<K33Store>();
+  // }
+  else
+  {
+    throw std::invalid_argument("Unsupported K_{s,t} store type");
+  }
+}
+
+void Runner::run()
+{
+  std::vector<std::vector<int>> results(39, std::vector<int>(39, 0));
+  getConfigInstance().loadConfig(std::string(Constants::CONFIG_FILE));
+  s_ = getConfigInstance().s;
+  t_ = getConfigInstance().t;
+  prob_ = makeProb(getConfigInstance().probabilityType, getConfigInstance().min,
+                   getConfigInstance().min, s_, t_);
+  kstStore_ = makeKstStore(s_, t_);
+  runFullIteration(getConfigInstance().min, getConfigInstance().max, getConfigInstance().runCount,
+                   getConfigInstance().iterations, getConfigInstance().insideIterations);
+}
+
+void Runner::runFullIteration(int min, int max, int runCount, int iterations, int insideIterations)
+{
+  for (int runid = 0; runid < runCount; ++runid)
+  {
+    Results res = runInRange(min, max, iterations, insideIterations);
+    for (size_t i = 0; i < res.size(); ++i)
+    {
+      for (size_t j = 0; j < res[i].size(); ++j)
+      {
+        if (res[i][j] > results_[i][j])
+        {
+          results_[i][j] = res[i][j];
+        }
+      }
+    }
+  }
+}
+
+Results Runner::runInRange(int min, int max, int iterations, int insideIterations)
+{
+  int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
+  Results res = {};
+  for (int m = min; m < max; ++m)  // TODO nem szimmetrikus esetek
+  {
+    for (int n = min; n < max; ++n)
+    {
+      std::pair<int, Graph> graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
+          {};  // because its 0 initialized all the edges will be 0
+      Graph adj(m, n);
+      Logs logs;
+      logs.startTimer();
+      prob_->reInitialize(m, n, s_, t_);
+      for (int iter = 0; iter < iterations; iter++)
+      {
+        prob_->clear();
+        kstStore_->clear();
+        adj.reset();
+        runIteration(adj, insideIterations, m, n);
+        int edgeNum = addTrivialEdges(adj, logs);
+        if (edgeNum > graphsToSave[maxGraphsToSave - 1].first &&
+            !std::all_of(std::begin(graphsToSave), std::end(graphsToSave),
+                         [edgeNum](const auto &a) { return a.first == edgeNum; }))
+        {
+          graphsToSave[maxGraphsToSave - 1] = std::make_pair(edgeNum, adj);
+          std::sort(std::begin(graphsToSave), std::end(graphsToSave),
+                    [](const auto &a, const auto &b) { return a.first > b.first; });
+        }
+      }
+      res[m - 2][n - 2] = graphsToSave[0].first;
+      FileManager::log(logs);
+      for (int i = 0; i < maxGraphsToSave; ++i)
+      {
+        if (graphsToSave[i].first == 0) break;
+        FileManager::print_graph(graphsToSave[i].second,
+                                 getConfigInstance().outputFilename(m, n, graphsToSave[i].first));
+      }
+    }
+  }
+  return res;
+}
+
+void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
+{
+  for (int iter = 0; iter < insideIterations; ++iter)
+  {
+    for (int u = 0; u < m; ++u)
+    {
+      for (int v = 0; v < n; ++v)
+      {
+        if (adj[u][v] == 0)
+        {
+          double p = prob_->get_p(u, v);
+          double rand_val = static_cast<double>(rand()) / RAND_MAX;
+          if (rand_val < p)
+          {
+            prob_->add_edge(u, v);
+            kstStore_->storeKst(adj, u, v);
+            adj[u][v] = 1;
+          }
+        }
+      }
+    }
+    while (!kstStore_->empty())
+    {
+      kstStore_->reflipCircle(adj, *prob_);
+      kstStore_->reevalCircles(adj);
+    }
+  }
+}
