@@ -101,9 +101,9 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
 {
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
-  for (int m = min; m < max; ++m)  // TODO nem szimmetrikus esetek
+  for (int m = min; m <= max; ++m)  // TODO nem szimmetrikus esetek
   {
-    for (int n = min; n < max; ++n)
+    for (int n = min; n <= max; ++n)
     {
       std::pair<int, Graph> graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
           {};  // because its 0 initialized all the edges will be 0
