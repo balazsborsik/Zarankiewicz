@@ -12,6 +12,26 @@
 #include "FileManager.h"
 #include "Graph.h"
 #include "K22Store.h"
+#include "Logger.h"
+
+void Runner::printResults(const std::string &filename, const Results &results)
+{
+  std::ofstream outfile;
+  outfile.open(filename);
+  if (!outfile.is_open())
+  {
+    throw std::runtime_error("Could not open log file: " + filename);
+  }
+  size_t siz = results.size();
+  for (size_t i = 0; i < siz; ++i)
+  {
+    for (size_t j = 0; j < siz; ++j)
+    {
+      outfile << results[i][j] << " ";
+    }
+    outfile << std::endl;
+  }
+}
 
 int Runner::addTrivialEdges(Graph &adj, Logs &logs)  // TODO! becnchmark the other version where
                                                      // it picks all the edges in random order
@@ -81,9 +101,10 @@ void Runner::run()
 
 void Runner::runFullIteration(int min, int max, int runCount, int iterations, int insideIterations)
 {
-  for (int runid = 0; runid < runCount; ++runid)
+  for (int runId = 0; runId < runCount; ++runId)
   {
-    Results res = runInRange(min, max, iterations, insideIterations);
+    Results res = runInRange(min, max, iterations, insideIterations, runId);
+    printResults(std::string(Constants::RESULTS_FILE) + std::to_string(runId) + ".txt", res);
     for (size_t i = 0; i < res.size(); ++i)
     {
       for (size_t j = 0; j < res[i].size(); ++j)
@@ -95,12 +116,16 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
       }
     }
   }
+  printResults("final" + std::string(Constants::RESULTS_FILE) +
+                   std::to_string(getConfigInstance().id) + ".txt",
+               results_);
 }
 
-Results Runner::runInRange(int min, int max, int iterations, int insideIterations)
+Results Runner::runInRange(int min, int max, int iterations, int insideIterations, int runId)
 {
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
+  Logger logger(std::string(Constants::LOG_FILE) + std::to_string(runId) + ".txt");
   for (int m = min; m <= max; ++m)  // TODO nem szimmetrikus esetek
   {
     for (int n = min; n <= max; ++n)
@@ -128,7 +153,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
         }
       }
       res[m - 2][n - 2] = graphsToSave[0].first;
-      FileManager::log(logs);
+      logger.log(logs);
       for (int i = 0; i < maxGraphsToSave; ++i)
       {
         if (graphsToSave[i].first == 0) break;

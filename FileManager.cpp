@@ -9,8 +9,6 @@ std::map<std::pair<int, int>,
          std::array<std::pair<int, std::string>, Constants::MAX_GRAPHS_TO_SAVE>>
     FileManager::existingFilenames_;
 
-std::ofstream FileManager::logFile_;
-
 Graph FileManager::loadTextWholeFile(const std::string& filename, int m,
                                      int n)  // TODO try this to measure performance improvement
 {
@@ -119,23 +117,5 @@ void FileManager::loadExistingFilenames()
 
 void FileManager::init()
 {
-  logFile_.open(std::string(Constants::LOG_FILE), std::ios::app);
-  if (!logFile_.is_open())
-  {
-    throw std::runtime_error("Failed to open log file");
-  }
-
   loadExistingFilenames();
-}
-
-void FileManager::log(const Logs& logs)
-{
-  logs.print(logFile_);
-  logFile_ << std::endl;
-  logFile_.flush();
-}
-
-void FileManager::closeLogFile()
-{
-  logFile_.close();
 }

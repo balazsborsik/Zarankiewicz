@@ -20,13 +20,14 @@ class Runner
 
   void runFullIteration(int min, int max, int runCount, int iterations, int insideIterations);
 
-  Results runInRange(int min, int max, int iterations, int insideIterations);
+  Results runInRange(int min, int max, int iterations, int insideIterations, int runId);
 
   void runIteration(Graph &adj, int insideIterations, int m, int n);
 
   std::unique_ptr<Probabilities> makeProb(int type, int m, int n, int s, int t);
   std::unique_ptr<KstStore> makeKstStore(int s, int t);
   int addTrivialEdges(Graph &adj, Logs &logs);
+  void printResults(const std::string &filename, const Results &results);
 
  public:
   Runner() {};
