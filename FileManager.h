@@ -14,8 +14,9 @@ class FileManager
   static Graph create_from_file(int m, int n, const std::string& filename);
   static void print_graph(const Graph& graph, const std::string& filename = "");
   static void init();
-  static Graph loadTextWholeFile(const std::string& filename, int m,
-                                 int n);  // TODO try this to measure performance improvement
+  static Graph loadTextWholeFile(
+      const std::string& filename, int m,
+      int n);  // TODO try this to measure performance improvement against create_from_file()
   static void loadExistingFilenames();  // WARNING: this will cache all existing filenames in memory
                                         // if you print additional graphs you need to call this
                                         // again to refresh the cache

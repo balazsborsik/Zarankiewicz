@@ -10,6 +10,7 @@
 class Logs
 {
  private:
+  int m_, n_, s_, t_;
   int siz_ = 0;
   int maximum_ = 0;
   double mean_ = 0.0;
@@ -20,6 +21,8 @@ class Logs
   double elapsedMilliseconds() const;
 
  public:
+  Logs(int m, int n, int s, int t) : m_(m), n_(n), s_(s), t_(t) { startTimer(); }
+
   void startTimer();
 
   void add(int x);

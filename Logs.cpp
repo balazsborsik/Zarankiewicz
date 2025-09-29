@@ -47,6 +47,7 @@ double Logs::variance() const
 
 void Logs::print(std::ostream& out) const
 {
+  out << "Z(" << m_ << ", " << n_ << ", " << s_ << ", " << t_ << "): ";
   out << "Max: " << maximum_ << "; ";
   out << "Mean: " << mean_ << "; ";
   out << "Variance: " << variance() << "; ";

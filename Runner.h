@@ -28,6 +28,9 @@ class Runner
   std::unique_ptr<KstStore> makeKstStore(int s, int t);
   int addTrivialEdges(Graph &adj, Logs &logs);
   void printResults(const std::string &filename, const Results &results);
+  void updateGraphsToSave(std::pair<int, Graph> (&graphs)[Constants::MAX_GRAPHS_TO_SAVE],
+                          Graph &adj, int edgeNum, int maxGraphsToSave);
+  void getStartingGraph() {}
 
  public:
   Runner() {};

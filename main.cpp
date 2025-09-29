@@ -53,6 +53,5 @@ int main()
   stats.secondsRun += static_cast<int>(seconds);
   WriteRunStats(stats);
 
-  FileManager::closeLogFile();
   return 0;
 }
