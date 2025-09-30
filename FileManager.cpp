@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <regex>
 
+#include "Config.h"
 #include "Constants.h"
 
 std::map<std::pair<int, int>,
@@ -85,7 +86,8 @@ void FileManager::loadExistingFilenames()
   try
   {
     std::regex re(R"(Z(\d+)_(\d+)_(\d+)_(\d+)_(\d+)\.txt)");
-    for (const auto& entry : std::filesystem::directory_iterator(Constants::OUTPUT_DIRECTORY))
+    for (const auto& entry :
+         std::filesystem::directory_iterator(getConfigInstance().outputDirectory()))
     {
       std::smatch match;
       std::string filename = entry.path().filename().string();

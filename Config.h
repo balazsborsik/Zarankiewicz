@@ -47,9 +47,14 @@ struct Config
       throw std::invalid_argument("Invalid maxGraphsToSave value in config");
   }
 
+  std::string outputDirectory() const
+  {
+    return std::format("{}/K{}{}/", Constants::OUTPUT_DIRECTORY, s, t);
+  }
+
   std::string outputFilename(int m, int n, int edgeCount) const
   {
-    return std::format("{}Z{}_{}_{}_{}_{}.txt", Constants::OUTPUT_DIRECTORY, m, n, s, t, edgeCount);
+    return std::format("{}Z{}_{}_{}_{}_{}.txt", outputDirectory(), s, t, m, n, s, t, edgeCount);
   }
 };
 
