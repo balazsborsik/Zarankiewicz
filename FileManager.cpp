@@ -6,9 +6,8 @@
 #include "Config.h"
 #include "Constants.h"
 
-std::map<std::pair<int, int>,
-         std::array<std::pair<int, std::string>, Constants::MAX_GRAPHS_TO_SAVE>>
-    FileManager::existingFilenames_;
+std::array<std::pair<int, Graph>, Constants::MAX_GRAPHS_TO_SAVE>
+    existingGraphs_[Constants::MAX_SIZE + 1][Constants::MAX_SIZE + 1];
 
 Graph FileManager::loadTextWholeFile(const std::string& filename, int m,
                                      int n)  // TODO try this to measure performance improvement
@@ -80,9 +79,8 @@ void FileManager::print_graph(const Graph& graph, std::ostream& out)
   }
 }
 
-void FileManager::loadExistingFilenames()
+void FileManager::loadExistingGraphs()
 {
-  existingFilenames_.clear();
   try
   {
     std::regex re(R"(Z(\d+)_(\d+)_(\d+)_(\d+)_(\d+)\.txt)");
@@ -90,17 +88,17 @@ void FileManager::loadExistingFilenames()
          std::filesystem::directory_iterator(getConfigInstance().outputDirectory()))
     {
       std::smatch match;
-      std::string filename = entry.path().filename().string();
+      std::string filename = entry.path().string();
       if (std::regex_search(filename, match, re))
       {
         int m = std::stoi(match[1]);
         int n = std::stoi(match[2]);
         int edgeCount = std::stoi(match[5]);
 
-        auto& arr = existingFilenames_[{m, n}];
+        auto& arr = existingGraphs_[m][n];
         if (arr.back().first < edgeCount)
         {
-          arr.back() = {edgeCount, filename};
+          arr.back() = {edgeCount, create_from_file(m, n, filename)};
           int i = arr.size() - 1;
           while (i > 0 && arr[i - 1].first < arr[i].first)
           {
@@ -119,5 +117,5 @@ void FileManager::loadExistingFilenames()
 
 void FileManager::init()
 {
-  loadExistingFilenames();
+  loadExistingGraphs();
 }

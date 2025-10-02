@@ -9,6 +9,7 @@
 #include "ConfigLoader.h"
 #include "Constants.h"
 #include "Dynp.h"
+#include "ExistingGraphs.h"
 #include "FileManager.h"
 #include "Graph.h"
 #include "K22Store.h"
@@ -147,13 +148,14 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
       std::pair<int, Graph> graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
           {};  // because its 0 initialized all the edges will be 0
       Graph adj(m, n);
+      ExistingGraphs existingGraphs(m, n);
       Logs logs(m, n, s_, t_);
       prob_->reInitialize(m, n, s_, t_);
       for (int iter = 0; iter < iterations; iter++)
       {
         prob_->clear();
         kstStore_->clear();
-        adj.reset();
+        adj = existingGraphs.getStartingGraph(iter);
         runIteration(adj, insideIterations, m, n);
         int edgeNum = addTrivialEdges(adj, logs);
         updateGraphsToSave(graphsToSave, adj, edgeNum, maxGraphsToSave);
