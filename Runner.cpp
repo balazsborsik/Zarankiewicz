@@ -8,6 +8,7 @@
 #include "Config.h"
 #include "ConfigLoader.h"
 #include "Constants.h"
+#include "DynProbabilities.h"
 #include "Dynp.h"
 #include "ExistingGraphs.h"
 #include "FileManager.h"
@@ -81,6 +82,8 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
   {
     case 0:
       return std::make_unique<Dynp>(m, n, s, t);
+    case 1:
+      return std::make_unique<DynProbabilities>(m, n, s, t);
     default:
       throw std::invalid_argument("Unsupported Probabilities type");
   }

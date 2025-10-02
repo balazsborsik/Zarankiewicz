@@ -7,7 +7,7 @@
 #include "Constants.h"
 
 std::array<std::pair<int, Graph>, Constants::MAX_GRAPHS_TO_SAVE>
-    existingGraphs_[Constants::MAX_SIZE + 1][Constants::MAX_SIZE + 1];
+    FileManager::existingGraphs_[Constants::MAX_SIZE + 1][Constants::MAX_SIZE + 1] = {};
 
 Graph FileManager::loadTextWholeFile(const std::string& filename, int m,
                                      int n)  // TODO try this to measure performance improvement
