@@ -35,6 +35,7 @@ Graph FileManager::loadTextWholeFile(const std::string& filename, int m,
 Graph FileManager::create_from_file(int m, int n, const std::string& filename)
 {
   Graph graph(m, n);
+  int edge;
   std::ifstream file(filename);
   if (!file.is_open())
   {
@@ -44,7 +45,8 @@ Graph FileManager::create_from_file(int m, int n, const std::string& filename)
   {
     for (int j = 0; j < n; ++j)
     {
-      file >> graph.adj[i][j];
+      file >> edge;
+      if (edge) graph.addEdge(i, j);
     }
   }
   file.close();
