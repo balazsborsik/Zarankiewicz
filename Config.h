@@ -6,11 +6,12 @@
 
 #include "ConfigLoader.h"
 #include "Constants.h"
+#include "Runstats.h"
 
 struct Config
 {
  public:
-  int id;
+  RunStats runStats;
   int runCount;
   int iterations;
   int insideIterations;
@@ -35,6 +36,7 @@ struct Config
       max = loader.getInt("max", 40);
       probabilityType = loader.getInt("probabilityType", 0);
       maxGraphsToSave = loader.getInt("maxGraphsToSave", 3);
+      runStats.start(outputDirectory() + std::string(Constants::RUNSTATS_FILE) + ".txt");
     }
     else
     {
@@ -50,6 +52,29 @@ struct Config
   std::string outputDirectory() const
   {
     return std::format("{}/K{}{}/", Constants::OUTPUT_DIRECTORY, s, t);
+  }
+
+  std::string graphsDirectory() const
+  {
+    return std::format("{}{}/", outputDirectory(), Constants::GRAPHS_DIRECTORY);
+  }
+
+  std::string finalResultsFileName() const
+  {
+    return std::format("{}{}/final{}{}.txt", outputDirectory(), Constants::RESULTS_DIRECTORY,
+                       Constants::RESULTS_FILE, runStats.id);
+  }
+
+  std::string resultsFileName(int id) const
+  {
+    return std::format("{}{}/{}{}_{}.txt", outputDirectory(), Constants::RESULTS_DIRECTORY,
+                       Constants::RESULTS_FILE, runStats.id, id);
+  }
+
+  std::string logFileName(int id) const
+  {
+    return std::format("{}{}/{}{}_{}.txt", outputDirectory(), Constants::LOGS_DIRECTORY,
+                       Constants::LOG_FILE, runStats.id, id);
   }
 
   std::string outputFilename(int m, int n, int edgeCount) const

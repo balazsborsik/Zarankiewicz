@@ -117,7 +117,7 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
   for (int runId = 0; runId < runCount; ++runId)
   {
     Results res = runInRange(min, max, iterations, insideIterations, runId);
-    printResults(std::string(Constants::RESULTS_FILE) + std::to_string(runId) + ".txt", res);
+    printResults(getConfigInstance().resultsFileName(runId), res);
     for (size_t i = 0; i < res.size(); ++i)
     {
       for (size_t j = 0; j < res[i].size(); ++j)
@@ -129,16 +129,14 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
       }
     }
   }
-  printResults("final" + std::string(Constants::RESULTS_FILE) +
-                   std::to_string(getConfigInstance().id) + ".txt",
-               results_);
+  printResults(getConfigInstance().finalResultsFileName(), results_);
 }
 
 Results Runner::runInRange(int min, int max, int iterations, int insideIterations, int runId)
 {
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
-  Logger logger(std::string(Constants::LOG_FILE) + std::to_string(runId) + ".txt");
+  Logger logger(getConfigInstance().logFileName(runId));
   for (int m = min; m <= max; ++m)  // TODO nem szimmetrikus esetek
   {
     for (int n = min; n <= max; ++n)

@@ -87,7 +87,7 @@ void FileManager::loadExistingGraphs()
   {
     std::regex re(R"(Z(\d+)_(\d+)_(\d+)_(\d+)_(\d+)\.txt)");
     for (const auto& entry :
-         std::filesystem::directory_iterator(getConfigInstance().outputDirectory()))
+         std::filesystem::directory_iterator(getConfigInstance().graphsDirectory()))
     {
       std::smatch match;
       std::string filename = entry.path().string();
