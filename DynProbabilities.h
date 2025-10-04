@@ -28,8 +28,7 @@ class DynProbabilities : public Probabilities
   }
 
   // Constructor from a Graph
-  DynProbabilities(const Graph &graph, int upper_bound, int s = 0, int t = 0)
-      : Probabilities(graph, s, t)
+  DynProbabilities(const Graph &graph, int upper_bound, int s, int t) : Probabilities(graph, s, t)
   {
     int m = graph.m;
     int n = graph.n;

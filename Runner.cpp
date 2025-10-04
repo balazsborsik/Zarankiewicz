@@ -113,6 +113,7 @@ void Runner::run()
   prob_ = makeProb(getConfigInstance().probabilityType, getConfigInstance().min,
                    getConfigInstance().min, s_, t_);
   kstStore_ = makeKstStore(s_, t_);
+  FileManager::init();
   runFullIteration(getConfigInstance().min, getConfigInstance().max, getConfigInstance().runCount,
                    getConfigInstance().iterations, getConfigInstance().insideIterations);
 }

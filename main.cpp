@@ -36,8 +36,6 @@ void WriteRunStats(const RunStats& stats)
 
 int main()
 {
-  FileManager::init();
-
   auto start = std::chrono::steady_clock::now();
 
   RunStats stats = LoadRunStats();
