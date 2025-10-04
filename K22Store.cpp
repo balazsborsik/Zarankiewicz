@@ -49,7 +49,7 @@ void K22Store::storeKst(const Graph &adj, int u, int v)
           {
             for (int j = 0; j < 2; j++)
             {
-              edges_in_circles_[created.u_arr[i]][created.v_arr[j]]++;
+              edges_in_circles_.adj[created.u_arr[i]][created.v_arr[j]]++;
             }
           }
           circles_.push_back(created);
@@ -61,25 +61,26 @@ void K22Store::storeKst(const Graph &adj, int u, int v)
 
 void K22Store::reevalCircles(const Graph &adj)
 {
-  circles_.erase(std::remove_if(circles_.begin(), circles_.end(),
-                                [&adj, this](const Kst<2, 2> &circle)
-                                {
-                                  for (int i = 0; i < 2; ++i)
-                                  {
-                                    for (int j = 0; j < 2; ++j)
-                                    {
-                                      if (!adj[circle.u_arr[i]][circle.v_arr[j]])
-                                      {
-                                        for (int i = 0; i < 2; ++i)
-                                          for (int j = 0; j < 2; ++j)
-                                            edges_in_circles_[circle.u_arr[i]][circle.v_arr[j]]--;
-                                        return true;
-                                      }
-                                    }
-                                  }
-                                  return false;
-                                }),
-                 circles_.end());
+  circles_.erase(
+      std::remove_if(circles_.begin(), circles_.end(),
+                     [&adj, this](const Kst<2, 2> &circle)
+                     {
+                       for (int i = 0; i < 2; ++i)
+                       {
+                         for (int j = 0; j < 2; ++j)
+                         {
+                           if (!adj[circle.u_arr[i]][circle.v_arr[j]])
+                           {
+                             for (int i = 0; i < 2; ++i)
+                               for (int j = 0; j < 2; ++j)
+                                 edges_in_circles_.adj[circle.u_arr[i]][circle.v_arr[j]]--;
+                             return true;
+                           }
+                         }
+                       }
+                       return false;
+                     }),
+      circles_.end());
 }
 
 bool K22Store::reflipCircle(Graph &adj, Probabilities &prob)
@@ -106,7 +107,7 @@ bool K22Store::reflipCircle(Graph &adj, Probabilities &prob)
       }
     }
   }
-  adj[edge.first][edge.second] = 0;
+  adj.removeEdge(edge.first, edge.second);
   prob.delete_edge(edge.first, edge.second);
   return true;
 }
