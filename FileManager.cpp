@@ -25,7 +25,7 @@ Graph FileManager::loadTextWholeFile(const std::string& filename, int m,
   {
     for (int j = 0; j < n; ++j)
     {
-      iss >> g[i][j];
+      iss >> g.adj[i][j];
     }
   }
 
@@ -44,7 +44,7 @@ Graph FileManager::create_from_file(int m, int n, const std::string& filename)
   {
     for (int j = 0; j < n; ++j)
     {
-      file >> graph[i][j];
+      file >> graph.adj[i][j];
     }
   }
   file.close();

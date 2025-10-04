@@ -40,15 +40,12 @@ void Dynp::delete_edge(int v_m, int v_n)
 {
   --degree_m_[v_m];
   --degree_n_[v_n];
-  --addedEdgesInInsideIter;  // code to comment out for testing purposes for more info
-                             // Runner.cpp.runIteration()
 }
 
 void Dynp::add_edge(int v_m, int v_n)
 {
   ++degree_m_[v_m];
   ++degree_n_[v_n];
-  --addedEdgesInInsideIter;
 }
 
 void Dynp::clear()

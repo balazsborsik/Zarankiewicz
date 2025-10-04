@@ -35,17 +35,17 @@ void Runner::printResults(const std::string &filename, const Results &results)
   }
 }
 
-void Runner::updateGraphsToSave(
-    std::pair<int, Graph> (&graphsToSave)[Constants::MAX_GRAPHS_TO_SAVE], Graph &adj, int edgeNum,
-    int maxGraphsToSave)
+void Runner::updateGraphsToSave(Graph (&graphsToSave)[Constants::MAX_GRAPHS_TO_SAVE], Graph &adj,
+                                int maxGraphsToSave)
 {
-  if (edgeNum > graphsToSave[maxGraphsToSave - 1].first &&
-      !std::all_of(std::begin(graphsToSave), std::end(graphsToSave),
-                   [edgeNum](const auto &a) { return a.first == edgeNum; }))
+  int edgeNum = adj.edges;
+  if (edgeNum > graphsToSave[maxGraphsToSave - 1].edges &&
+      std::all_of(std::begin(graphsToSave), std::end(graphsToSave),
+                  [edgeNum](const auto &a) { return a.edges != edgeNum; }))
   {
-    graphsToSave[maxGraphsToSave - 1] = std::make_pair(edgeNum, adj);
+    graphsToSave[maxGraphsToSave - 1] = adj;
     std::sort(std::begin(graphsToSave), std::end(graphsToSave),
-              [](const auto &a, const auto &b) { return a.first > b.first; });
+              [](const auto &a, const auto &b) { return a.edges > b.edges; });
   }
 }
 
@@ -55,25 +55,19 @@ int Runner::addTrivialEdges(Graph &adj, Logs &logs)  // TODO! becnchmark the oth
   int m = adj.m;
   int n = adj.n;
   int addedEdges = 0;
-  int totalEdges = 0;
   for (int u = 0; u < m; ++u)
   {
     for (int v = 0; v < n; ++v)
     {
-      if (adj[u][v] == 1)
+      if (!adj[u][v] && !kstStore_->createsKst(adj, u, v))
       {
-        ++totalEdges;
-      }
-      else if (!kstStore_->createsKst(adj, u, v))
-      {
-        adj[u][v] = 1;
+        adj.addEdge(u, v);
         ++addedEdges;
       }
     }
   }
-  totalEdges += addedEdges;
-  logs.add(totalEdges);
-  return totalEdges;
+  logs.add(adj.edges);
+  return addedEdges;
 }
 
 std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, int t)
@@ -149,7 +143,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
   {
     for (int n = min; n <= max; ++n)
     {
-      std::pair<int, Graph> graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
+      Graph graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
           {};  // because its 0 initialized all the edges will be 0
       Graph adj(m, n);
       ExistingGraphs existingGraphs(m, n);
@@ -163,16 +157,16 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
         adj.m = m;
         adj.n = n;
         runIteration(adj, insideIterations, m, n);
-        int edgeNum = addTrivialEdges(adj, logs);
-        updateGraphsToSave(graphsToSave, adj, edgeNum, maxGraphsToSave);
+        addTrivialEdges(adj, logs);
+        updateGraphsToSave(graphsToSave, adj, maxGraphsToSave);
       }
-      res[m - 2][n - 2] = graphsToSave[0].first;
+      res[m - 2][n - 2] = graphsToSave[0].edges;
       logger.log(logs);
       for (int i = 0; i < maxGraphsToSave; ++i)
       {
-        if (graphsToSave[i].first == 0) break;
-        FileManager::print_graph(graphsToSave[i].second,
-                                 getConfigInstance().outputFilename(m, n, graphsToSave[i].first));
+        if (graphsToSave[i].edges == 0) break;
+        FileManager::print_graph(graphsToSave[i],
+                                 getConfigInstance().outputFilename(m, n, graphsToSave[i].edges));
       }
     }
   }
@@ -183,15 +177,12 @@ void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
 {
   // TODO comment out the code below and watch for performance changes
   // also comment out the addedEdges part from runner.cpp and from K22Store
-  Graph best(adj);  // code to comment out
-  int addedEdgesInBest = 0;
-  prob_->addedEdgesInInsideIter = 0;  // code to comment out
+  Graph best(adj);  // code to comment out // code to comment out
   for (int iter = 0; iter < insideIterations; ++iter)
   {
-    if (addedEdgesInBest < prob_->addedEdgesInInsideIter)  // code to comment out
+    if (adj.edges > best.edges)  // code to comment out
     {
       best = adj;
-      addedEdgesInBest = prob_->addedEdgesInInsideIter;
     }
     for (int u = 0; u < m; ++u)
     {
@@ -205,7 +196,7 @@ void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
           {
             prob_->add_edge(u, v);
             kstStore_->storeKst(adj, u, v);
-            adj[u][v] = 1;
+            adj.addEdge(u, v);
           }
         }
       }
@@ -216,7 +207,7 @@ void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
       kstStore_->reevalCircles(adj);
     }
   }
-  if (addedEdgesInBest != prob_->addedEdgesInInsideIter)  // code to comment out
+  if (best.edges > adj.edges)  // TODO code to comment out probably
   {
     adj = best;
   }

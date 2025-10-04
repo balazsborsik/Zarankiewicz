@@ -10,8 +10,6 @@ class Probabilities
   int s_, t_;
 
  public:
-  int addedEdgesInInsideIter =
-      0;  // code to comment out for testing purposes Runner.cpp runIteration
   virtual ~Probabilities() = default;
   Probabilities(int m, int n, int s, int t) : m_(m), n_(n), s_(s), t_(t) {}
   Probabilities(const Graph &graph, int s, int t) : m_(graph.m), n_(graph.n), s_(s), t_(t) {};
