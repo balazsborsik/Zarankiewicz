@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Probabilities.h"
+#include "Util.h"
 
 class DynProbabilities : public Probabilities
 {
@@ -17,8 +18,9 @@ class DynProbabilities : public Probabilities
 
  public:
   // Constructor with dimensions
-  DynProbabilities(int n, int m, int upper_bound, int s = 0, int t = 0) : Probabilities(m, n, s, t)
+  DynProbabilities(int n, int m, int s, int t) : Probabilities(m, n, s, t)
   {
+    int upper_bound = Util::upperBound(m_, n_, s_, t_);
     expected_m_ = (double)upper_bound / m + 0.5;
     expected_n_ = (double)upper_bound / n + 0.5;
     expected_n_percent_ = (double)upper_bound / (n * m);
@@ -28,10 +30,11 @@ class DynProbabilities : public Probabilities
   }
 
   // Constructor from a Graph
-  DynProbabilities(const Graph &graph, int upper_bound, int s, int t) : Probabilities(graph, s, t)
+  DynProbabilities(const Graph &graph, int s, int t) : Probabilities(graph, s, t)
   {
     int m = graph.m;
     int n = graph.n;
+    int upper_bound = Util::upperBound(m_, n_, s_, t_);
 
     expected_m_ = (double)upper_bound / m + 0.5;
     expected_n_ = (double)upper_bound / n + 0.5;
@@ -53,11 +56,21 @@ class DynProbabilities : public Probabilities
     }
   }
 
+  void init()
+  {
+    int upper_bound = Util::upperBound(m_, n_, s_, t_);
+    expected_m_ = (double)upper_bound / m_ + 0.5;
+    expected_n_ = (double)upper_bound / n_ + 0.5;
+    expected_n_percent_ = (double)upper_bound / (n_ * m_);
+
+    edgenum_m_.assign(m_, 0);
+    edgenum_n_.assign(n_, 0);
+  };
+
   void reInitialize(int m, int n, int s, int t) override
   {
     Probabilities::reInitialize(m, n, s, t);
-    edgenum_m_.assign(m, 0);
-    edgenum_n_.assign(n, 0);
+    init();
   }
 
   void reInitailize(const Graph &graph, int s, int t) override

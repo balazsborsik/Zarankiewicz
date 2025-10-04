@@ -160,6 +160,8 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
         prob_->clear();
         kstStore_->clear();
         adj = existingGraphs.getStartingGraph(iter);
+        adj.m = m;
+        adj.n = n;
         runIteration(adj, insideIterations, m, n);
         int edgeNum = addTrivialEdges(adj, logs);
         updateGraphsToSave(graphsToSave, adj, edgeNum, maxGraphsToSave);
