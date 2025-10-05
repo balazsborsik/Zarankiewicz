@@ -11,8 +11,8 @@
 #include "core/Graph.h"
 #include "io/FileManager.h"
 #include "logger/Logger.h"
-#include "probability/DynProbabilities.h"
 #include "probability/Dynp.h"
+#include "probability/OldDynp.h"
 #include "structure/K22Store.h"
 #include "util/ExistingGraphs.h"
 
@@ -77,7 +77,7 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
     case 0:
       return std::make_unique<Dynp>(m, n, s, t);
     case 1:
-      return std::make_unique<DynProbabilities>(m, n, s, t);
+      return std::make_unique<OldDynp>(m, n, s, t);
     default:
       throw std::invalid_argument("Unsupported Probabilities type");
   }

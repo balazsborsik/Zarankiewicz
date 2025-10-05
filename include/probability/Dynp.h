@@ -1,30 +1,17 @@
 #ifndef DYNP_H
 #define DYNP_H
 
-#include "config/Constants.h"
 #include "probability/Probabilities.h"
 
 class Dynp : public Probabilities
 {
- private:
-  int degree_m_[Constants::MAX_SIZE] = {};
-  int degree_n_[Constants::MAX_SIZE] = {};
-  double expected_m_;
-  double expected_n_;
-  double expected_percent_;
-
-  void init();
-  double fillFactor(int degree, double expected) const;
-
  public:
-  Dynp(int m, int n, int s, int t);
-  Dynp(const Graph &graph, int s, int t);
+  Dynp(int m, int n, int s, int t) : Probabilities(m, n, s, t) {}
+  Dynp(const Graph &graph, int s, int t) : Probabilities(graph, s, t) {}
   double get_p(int v_m, int v_n) override;
-  void delete_edge(int v_m, int v_n) override;
-  void add_edge(int v_m, int v_n) override;
-  void clear() override;
-  void reInitialize(int m, int n, int s, int t) override;
-  void reInitialize(const Graph &graph, int s, int t) override;
+
+ private:
+  double fillFactor(int degree, double expected) const;
 };
 
 #endif  // DYNP_H
