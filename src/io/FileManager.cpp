@@ -6,7 +6,7 @@
 #include "config/Config.h"
 #include "config/Constants.h"
 
-std::array<std::pair<int, Graph>, Constants::MAX_GRAPHS_TO_SAVE>
+std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE>
     FileManager::existingGraphs_[Constants::MAX_SIZE + 1][Constants::MAX_SIZE + 1] = {};
 
 Graph FileManager::loadTextWholeFile(const std::string& filename, int m,
@@ -46,7 +46,9 @@ Graph FileManager::create_from_file(int m, int n, const std::string& filename)
     for (int j = 0; j < n; ++j)
     {
       file >> edge;
-      if (edge) graph.addEdge(i, j);
+      if (edge)
+        graph.addEdge(i, j);  // TODO we can do this faster by reading directly into adj and setting
+                              // from the filename
     }
   }
   file.close();
@@ -98,11 +100,11 @@ void FileManager::loadExistingGraphs()
         int edgeCount = std::stoi(match[5]);
 
         auto& arr = existingGraphs_[m][n];
-        if (arr.back().first < edgeCount)
+        if (arr.back().edges < edgeCount)
         {
-          arr.back() = {edgeCount, create_from_file(m, n, filename)};
+          arr.back() = create_from_file(m, n, filename);
           int i = arr.size() - 1;
-          while (i > 0 && arr[i - 1].first < arr[i].first)
+          while (i > 0 && arr[i - 1].edges < arr[i].edges)
           {
             std::swap(arr[i - 1], arr[i]);
             --i;
@@ -115,6 +117,11 @@ void FileManager::loadExistingGraphs()
   {
     std::cerr << "Error: " << e.what() << "\n";
   }
+}
+
+std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE> FileManager::getExistingGraphs(int m, int n)
+{
+  return existingGraphs_[m][n];
 }
 
 void FileManager::init()

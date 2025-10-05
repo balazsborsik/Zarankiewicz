@@ -1,5 +1,7 @@
 #include "probability/OldDynp.h"
 
+#include <algorithm>
+
 double OldDynp::get_p(int v_m, int v_n)
 {
   int n = degree_n_[v_n];

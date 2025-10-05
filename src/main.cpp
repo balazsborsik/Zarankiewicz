@@ -10,6 +10,7 @@
 
 int main()
 {
+  srand(time(NULL));
   RunStats runStats;
   runStats.start();
 

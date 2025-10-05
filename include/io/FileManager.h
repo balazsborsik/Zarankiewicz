@@ -20,15 +20,11 @@ class FileManager
   static void loadExistingGraphs();  // WARNING: this will cache all existing filenames in memory
                                      // if you print additional graphs you need to call this
                                      // again to refresh the cache
-  static std::array<std::pair<int, Graph>, Constants::MAX_GRAPHS_TO_SAVE> getExistingGraphs(int m,
-                                                                                            int n)
-  {
-    return existingGraphs_[m][n];
-  }
+  static std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE> getExistingGraphs(int m, int n);
 
  private:
-  static std::array<std::pair<int, Graph>, Constants::MAX_GRAPHS_TO_SAVE>
-      existingGraphs_[Constants::MAX_SIZE + 1][Constants::MAX_SIZE + 1];
+  static std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE> existingGraphs_[Constants::MAX_SIZE + 1]
+                                                                         [Constants::MAX_SIZE + 1];
   static void print_graph(const Graph& graph, std::ostream& out);
 };
 
