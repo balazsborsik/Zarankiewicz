@@ -79,7 +79,7 @@ struct Config
 
   std::string outputFilename(int m, int n, int edgeCount) const
   {
-    return std::format("{}Z{}_{}_{}_{}_{}.txt", outputDirectory(), m, n, s, t, edgeCount);
+    return std::format("{}Z{}_{}_{}_{}_{}.txt", graphsDirectory(), m, n, s, t, edgeCount);
   }
 };
 
