@@ -8,7 +8,7 @@ void K22Store::clear()
   edges_in_circles_.reset();
 }
 
-bool K22Store::createsKst(const Graph &adj, int u, int v)
+bool K22Store::createsKst(const Graph &adj, int u, int v) const
 {
   int m = adj.m;
   int n = adj.n;

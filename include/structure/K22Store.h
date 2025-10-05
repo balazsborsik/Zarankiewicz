@@ -19,7 +19,7 @@ class K22Store : public KstStore
   int getT() const { return 2; }
   bool empty() { return circles_.empty(); }
   void clear() override;
-  bool createsKst(const Graph &adj, int u, int v) override;
+  bool createsKst(const Graph &adj, int u, int v) const override;
   void storeKst(const Graph &adj, int u, int v) override;
   void reevalCircles(const Graph &adj) override;
   bool reflipCircle(Graph &adj, Probabilities &prob) override;

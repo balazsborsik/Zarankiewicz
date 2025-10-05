@@ -22,7 +22,7 @@ void ExistingGraphs::returnExistingGraphs(int m, int n)
   }
 };
 
-void ExistingGraphs::addVertexToGraphM(Graph& graph)
+void ExistingGraphs::addVertexToGraphM(Graph& graph, const KstStore* kstStore)
 {
   int n = graph.n;
   int m = ++graph.m;
@@ -43,7 +43,7 @@ void ExistingGraphs::addVertexToGraphM(Graph& graph)
     for (int i = 0; i < n; ++i)
     {
       int vertex = order[i];
-      if (!createsKst(graph, m - 1, vertex))
+      if (!kstStore->createsKst(graph, m - 1, vertex))
       {
         currentChosen[currentSize++] = vertex;
         graph.addEdge(m - 1, vertex);
@@ -68,7 +68,7 @@ void ExistingGraphs::addVertexToGraphM(Graph& graph)
   }
 };
 
-void ExistingGraphs::addVertexToM(int m, int n)
+void ExistingGraphs::addVertexToM(int m, int n, const KstStore* kstStore)
 {
   startingGraphs_ = FileManager::getExistingGraphs(
       m - 1, n);  // its safe because FileManager returns an array even if we call with 0
@@ -82,12 +82,12 @@ void ExistingGraphs::addVertexToM(int m, int n)
     if (elm.edges > 0)
     {
       ++realSize;
-      addVertexToGraphM(elm);
+      addVertexToGraphM(elm, kstStore);
     }
   }
 };
 
-ExistingGraphs::ExistingGraphs(int m, int n, int operationType)
+ExistingGraphs::ExistingGraphs(int m, int n, int operationType, const KstStore* kstStore)
 {
   switch (operationType)
   {
@@ -95,10 +95,10 @@ ExistingGraphs::ExistingGraphs(int m, int n, int operationType)
       returnExistingGraphs(m, n);
       break;
     case 1:
-      addVertexToM(m, n);
+      addVertexToM(m, n, kstStore);
       break;
     case 2:
-      addVertexToN(m, n);
+      addVertexToN(m, n, kstStore);
       break;
     default:
       throw std::invalid_argument("Invalid operation type in ExistingGraphs constructor");
