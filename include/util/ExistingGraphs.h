@@ -13,21 +13,8 @@ class ExistingGraphs
   int realSize = 0;
 
  public:
-  ExistingGraphs(int m, int n, int operationType = 0)
-  {
-    startingGraphs_ = FileManager::getExistingGraphs(m, n);
-    for (const auto& elm : startingGraphs_)
-    {
-      if (elm.first > 0)
-      {
-        ++realSize;
-      }
-    }
-    if (realSize == 0)
-      realSize++;  // because if we have no graphs we always give back the first in the array
-  }
-
-  Graph getStartingGraph(int iteration) { return startingGraphs_[iteration % realSize].second; }
+  ExistingGraphs(int m, int n, int operationType = 0);
+  Graph getStartingGraph(int iteration) const;
 };
 
 #endif  // EXISTINGGRAPHS_H

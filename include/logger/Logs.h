@@ -22,13 +22,9 @@ class Logs
 
  public:
   Logs(int m, int n, int s, int t) : m_(m), n_(n), s_(s), t_(t) { startTimer(); }
-
   void startTimer();
-
   void add(int x);
-
   double variance() const;
-
   void print(std::ostream& out = std::cout) const;
 };
 
