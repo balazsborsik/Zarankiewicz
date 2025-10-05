@@ -60,8 +60,8 @@ void Dynp::reInitialize(int m, int n, int s, int t)
   init();
 }
 
-void Dynp::reInitailize(const Graph &graph, int s, int t)
+void Dynp::reInitialize(const Graph &graph, int s, int t)
 {
-  Probabilities::reInitailize(graph, s, t);
+  Probabilities::reInitialize(graph, s, t);
   init();
 }

@@ -73,9 +73,9 @@ class DynProbabilities : public Probabilities
     init();
   }
 
-  void reInitailize(const Graph &graph, int s, int t) override
+  void reInitialize(const Graph &graph, int s, int t) override
   {
-    Probabilities::reInitailize(graph, s, t);
+    Probabilities::reInitialize(graph, s, t);
     int m = graph.m;
     int n = graph.n;
 

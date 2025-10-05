@@ -24,7 +24,7 @@ class Dynp : public Probabilities
   void add_edge(int v_m, int v_n) override;
   void clear() override;
   void reInitialize(int m, int n, int s, int t) override;
-  void reInitailize(const Graph &graph, int s, int t) override;
+  void reInitialize(const Graph &graph, int s, int t) override;
 };
 
 #endif  // DYNP_H
