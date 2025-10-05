@@ -1,7 +1,7 @@
 #ifndef PROBABILITIES_H
 #define PROBABILITIES_H
 
-#include "Graph.h"
+#include "core/Graph.h"
 
 class Probabilities
 {

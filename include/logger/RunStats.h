@@ -4,8 +4,8 @@
 #include <chrono>
 #include <fstream>
 
-#include "ConfigLoader.h"
-#include "Constants.h"
+#include "config/ConfigLoader.h"
+#include "config/Constants.h"
 
 struct RunStats
 {

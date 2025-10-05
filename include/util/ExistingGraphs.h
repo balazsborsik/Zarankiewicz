@@ -3,8 +3,8 @@
 
 #include <fstream>
 
-#include "Constants.h"
-#include "FileManager.h"
+#include "config/Constants.h"
+#include "io/FileManager.h"
 
 class ExistingGraphs
 {

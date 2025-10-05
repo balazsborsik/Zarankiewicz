@@ -10,7 +10,15 @@
         "-O2",
         "-Wall",
         "-Wextra",
-        "${workspaceFolder}/*.cpp",
+        "-Iinclude",
+        "${workspaceFolder}/src/main.cpp",
+        "${workspaceFolder}/src/config/*.cpp",
+        "${workspaceFolder}/src/core/*.cpp",
+        "${workspaceFolder}/src/io/*.cpp",
+        "${workspaceFolder}/src/logger/*.cpp",
+        "${workspaceFolder}/src/probability/*.cpp",
+        "${workspaceFolder}/src/structure/*.cpp",
+        "${workspaceFolder}/src/util/*.cpp",
         "-o",
         "${workspaceFolder}/bin/program.exe"
       ],
@@ -21,6 +29,29 @@
       "problemMatcher": [
         "$gcc"
       ]
+    },
+    {
+      "label": "Build and Run Program",
+      "type": "shell",
+      "command": "${workspaceFolder}/bin/program.exe",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": [
+        "Build Project"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Program",
+      "type": "shell",
+      "command": "${workspaceFolder}/bin/program.exe",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
     }
   ]
 }

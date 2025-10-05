@@ -1,8 +1,8 @@
 #ifndef DYNP_H
 #define DYNP_H
 
-#include "Constants.h"
-#include "Probabilities.h"
+#include "config/Constants.h"
+#include "probability/Probabilities.h"
 
 class Dynp : public Probabilities
 {

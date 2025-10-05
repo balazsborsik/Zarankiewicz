@@ -2,11 +2,10 @@
 #define CONFIG_H
 
 #include <format>
-#include <unordered_map>
 
-#include "ConfigLoader.h"
-#include "Constants.h"
-#include "Runstats.h"
+#include "config/ConfigLoader.h"
+#include "config/Constants.h"
+#include "logger/Runstats.h"
 
 struct Config
 {

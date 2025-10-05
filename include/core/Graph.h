@@ -4,7 +4,7 @@
 #include <array>
 #include <iostream>
 
-#include "Constants.h"
+#include "config/Constants.h"
 
 struct Graph
 {

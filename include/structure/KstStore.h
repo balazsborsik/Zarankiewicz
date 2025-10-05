@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "Graph.h"
-#include "Kst.h"
-#include "Probabilities.h"
+#include "core/Graph.h"
+#include "probability/Probabilities.h"
+#include "structure/Kst.h"
 
 class KstStore
 {

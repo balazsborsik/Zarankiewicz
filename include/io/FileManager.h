@@ -5,8 +5,8 @@
 #include <iostream>
 #include <map>
 
-#include "Graph.h"
-#include "Logs.h"
+#include "core/Graph.h"
+#include "logger/Logs.h"
 
 class FileManager
 {

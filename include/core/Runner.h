@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "Graph.h"
-#include "KstStore.h"
-#include "Logs.h"
-#include "Probabilities.h"
+#include "core/Graph.h"
+#include "logger/Logs.h"
+#include "probability/Probabilities.h"
+#include "structure/KstStore.h"
 
 using Results = std::array<std::array<int, Constants::MAX_SIZE - 1>, Constants::MAX_SIZE - 1>;
 

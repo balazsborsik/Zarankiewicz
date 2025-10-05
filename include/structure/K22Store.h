@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "Kst.h"
-#include "KstStore.h"
+#include "structure/Kst.h"
+#include "structure/KstStore.h"
 
 class K22Store : public KstStore
 {

@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <vector>
 
-#include "Probabilities.h"
-#include "Util.h"
+#include "probability/Probabilities.h"
+#include "util/Util.h"
 
 class DynProbabilities : public Probabilities
 {
