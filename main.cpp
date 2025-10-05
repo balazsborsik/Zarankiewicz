@@ -5,13 +5,8 @@
 #include "ConfigLoader.h"
 #include "Constants.h"
 #include "FileManager.h"
+#include "RunStats.h"
 #include "Runner.h"
-
-struct RunStats
-{
-  int id;
-  int secondsRun;
-};
 
 int main()
 {
