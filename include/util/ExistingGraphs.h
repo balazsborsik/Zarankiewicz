@@ -14,6 +14,7 @@ class ExistingGraphs
   int realSize = 0;
 
   void addVertexToGraphM(Graph& inputGraph, const KstStore* kstStore);
+  void addVertexToGraphN(Graph& inputGraph, const KstStore* kstStore);
 
   void returnExistingGraphs(int m, int n);
   void addVertexToM(int m, int n, const KstStore* kstStore);

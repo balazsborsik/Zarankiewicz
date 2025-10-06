@@ -116,6 +116,7 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
 {
   for (int runId = 0; runId < runCount; ++runId)
   {
+    FileManager::loadExistingGraphs();
     Results res = runInRange(min, max, iterations, insideIterations, runId);
     printResults(getConfigInstance().resultsFileName(runId), res);
     for (size_t i = 0; i < res.size(); ++i)
@@ -137,14 +138,15 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
   Logger logger(getConfigInstance().logFileName(runId));
-  for (int m = min; m <= max; ++m)  // TODO nem szimmetrikus esetek
+  for (int m = min; m <= max; ++m)  // TODO szimmetrikus esetek
   {
     for (int n = min; n <= max; ++n)
     {
       Graph graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
           {};  // because its 0 initialized all the edges will be 0
       Graph adj(m, n);
-      ExistingGraphs existingGraphs(m, n);
+      ExistingGraphs existingGraphs(m, n, runId % 2 + 1,
+                                    kstStore_.get());  // TODO we need to get this from Config
       Logs logs(m, n, s_, t_);
       prob_->reInitialize(m, n, s_, t_);
       for (int iter = 0; iter < iterations; iter++)
@@ -189,7 +191,7 @@ void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
         if (adj[u][v] == 0)
         {
           double p = prob_->get_p(u, v);
-          double rand_val = static_cast<double>(rand()) / RAND_MAX;
+          double rand_val = Util::randDouble();
           if (rand_val < p)
           {
             prob_->add_edge(u, v);

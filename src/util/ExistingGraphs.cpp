@@ -3,6 +3,8 @@
 #include <cmath>
 #include <stdexcept>
 
+#include "util/Util.h"
+
 void ExistingGraphs::returnExistingGraphs(int m, int n)
 {
   startingGraphs_ = FileManager::getExistingGraphs(m, n);
@@ -36,9 +38,8 @@ void ExistingGraphs::addVertexToGraphM(Graph& graph, const KstStore* kstStore)
   int iterations = pow(m, 0.5) * n / 8 + 5;
   for (int k = 0; k < iterations; ++k)
   {
-    std::random_shuffle(std::begin(order), std::begin(order) + n);
+    Util::shuffle(std::begin(order), std::begin(order) + n);
     int currentChosen[Constants::MAX_SIZE] = {};
-    int neighbours[Constants::MAX_SIZE] = {};
     int currentSize = 0;
     for (int i = 0; i < n; ++i)
     {
@@ -68,6 +69,51 @@ void ExistingGraphs::addVertexToGraphM(Graph& graph, const KstStore* kstStore)
   }
 };
 
+void ExistingGraphs::addVertexToGraphN(Graph& graph, const KstStore* kstStore)
+{
+  int m = graph.m;
+  int n = ++graph.n;
+  int order[Constants::MAX_SIZE] = {};
+  for (int i = 0; i < m; ++i)
+  {
+    order[i] = i;
+  }
+  int chosenVertices[Constants::MAX_SIZE] = {};
+  int bestSize = 0;
+  int iterations = pow(n, 0.5) * m / 8 + 5;
+  for (int k = 0; k < iterations; ++k)
+  {
+    Util::shuffle(std::begin(order), std::begin(order) + m);
+    int currentChosen[Constants::MAX_SIZE] = {};
+    int currentSize = 0;
+    for (int i = 0; i < m; ++i)
+    {
+      int vertex = order[i];
+      if (!kstStore->createsKst(graph, vertex, n - 1))
+      {
+        currentChosen[currentSize++] = vertex;
+        graph.addEdge(vertex, n - 1);
+      }
+    }
+    if (currentSize > bestSize)
+    {
+      bestSize = currentSize;
+      for (int i = 0; i < bestSize; ++i)
+      {
+        chosenVertices[i] = currentChosen[i];
+      }
+    }
+    for (int i = 0; i < currentSize; i++)
+    {
+      graph.removeEdge(currentChosen[i], n - 1);
+    }
+  }
+  for (int i = 0; i < bestSize; ++i)
+  {
+    graph.addEdge(chosenVertices[i], n - 1);
+  }
+};
+
 void ExistingGraphs::addVertexToM(int m, int n, const KstStore* kstStore)
 {
   startingGraphs_ = FileManager::getExistingGraphs(
@@ -83,6 +129,25 @@ void ExistingGraphs::addVertexToM(int m, int n, const KstStore* kstStore)
     {
       ++realSize;
       addVertexToGraphM(elm, kstStore);
+    }
+  }
+};
+
+void ExistingGraphs::addVertexToN(int m, int n, const KstStore* kstStore)
+{
+  startingGraphs_ = FileManager::getExistingGraphs(
+      m, n - 1);  // its safe because FileManager returns an array even if we call with 0
+  if (startingGraphs_[0].edges == 0)
+  {
+    returnExistingGraphs(m, n);
+    return;
+  }
+  for (Graph& elm : startingGraphs_)
+  {
+    if (elm.edges > 0)
+    {
+      ++realSize;
+      addVertexToGraphN(elm, kstStore);
     }
   }
 };

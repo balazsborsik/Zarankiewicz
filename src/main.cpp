@@ -10,7 +10,6 @@
 
 int main()
 {
-  std::srand(std::time(NULL));
   RunStats runStats;
   runStats.start();
 

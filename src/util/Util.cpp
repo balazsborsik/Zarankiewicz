@@ -4,6 +4,13 @@
 #include <limits>
 #include <stdexcept>
 
+std::mt19937 Util::gen(std::random_device{}());
+
+double Util::randDouble()
+{
+  return (gen() / static_cast<double>(gen.max()));
+}
+
 int Util::upperBound(int m, int n, int s, int t)
 {
   int p = s - 1;
