@@ -153,7 +153,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
       {
         prob_->clear();
         kstStore_->clear();
-        adj = existingGraphs.getStartingGraph(iter);
+        adj = std::move(existingGraphs.getStartingGraph(iter));
         adj.m = m;
         adj.n = n;
         runIteration(adj, insideIterations, m, n);
@@ -165,6 +165,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
       for (int i = 0; i < maxGraphsToSave; ++i)
       {
         if (graphsToSave[i].edges == 0) break;
+        FileManager::addGraphToExisting(graphsToSave[i]);
         FileManager::print_graph(graphsToSave[i],
                                  getConfigInstance().outputFilename(m, n, graphsToSave[i].edges));
       }

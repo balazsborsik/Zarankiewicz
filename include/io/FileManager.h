@@ -14,6 +14,7 @@ class FileManager
   static Graph create_from_file(int m, int n, const std::string& filename);
   static void print_graph(const Graph& graph, const std::string& filename = "");
   static void init();
+  static void addGraphToExisting(const Graph& graph);
   static Graph loadTextWholeFile(
       const std::string& filename, int m,
       int n);  // TODO try this to measure performance improvement against create_from_file()

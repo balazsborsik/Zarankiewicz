@@ -119,6 +119,23 @@ void FileManager::loadExistingGraphs()
   }
 }
 
+void FileManager::addGraphToExisting(const Graph& graph)
+{
+  int m = graph.m;
+  int n = graph.n;
+  auto& arr = existingGraphs_[m][n];
+  if (arr.back().edges < graph.edges)
+  {
+    arr.back() = std::move(graph);
+    int i = arr.size() - 1;
+    while (i > 0 && arr[i - 1].edges < arr[i].edges)
+    {
+      std::swap(arr[i - 1], arr[i]);
+      --i;
+    }
+  }
+}
+
 std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE> FileManager::getExistingGraphs(int m, int n)
 {
   return existingGraphs_[m][n];
