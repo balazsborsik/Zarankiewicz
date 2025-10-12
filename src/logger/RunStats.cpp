@@ -21,9 +21,14 @@ void RunStats::save()
 {
   std::ofstream file(filename_);
   if (!file.is_open()) throw std::runtime_error("Failed to open run stats file for writing");
-  auto end = std::chrono::steady_clock::now();
-  int seconds = static_cast<int>(std::chrono::duration<double>(end - start_).count());
 
+  int seconds = getElapsedTime();
   file << "id = " << id + 1 << "\n";
   file << "secondsRun = " << secondsRun + seconds << "\n";
+}
+
+int RunStats::getElapsedTime() const
+{
+  auto end = std::chrono::steady_clock::now();
+  return static_cast<int>(std::chrono::duration<double>(end - start_).count());
 }

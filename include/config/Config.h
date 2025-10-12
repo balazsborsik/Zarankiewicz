@@ -26,6 +26,8 @@ struct Config
   std::string resultsFileName(int id) const;
   std::string logFileName(int id) const;
   std::string outputFilename(int m, int n, int edgeCount) const;
+  std::string executionTimeFilename() const;
+  void saveExecutionTime() const;
 
  private:
   Config() = default;

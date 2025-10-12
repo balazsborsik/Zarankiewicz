@@ -18,6 +18,7 @@ int main()
 
   runStats.save();
   getConfigInstance().runStats.save();
+  getConfigInstance().saveExecutionTime();
 
   return 0;
 }

@@ -135,28 +135,30 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
 
 Results Runner::runInRange(int min, int max, int iterations, int insideIterations, int runId)
 {
+  int insideIterationArray[] = {1, 3, 6, 12};
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
   Logger logger(getConfigInstance().logFileName(runId));
   for (int m = min; m <= max; ++m)  // TODO szimmetrikus esetek
   {
-    for (int n = min; n <= max; ++n)
+    for (int n = m; n <= max; ++n)
     {
       Graph graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
           {};  // because its 0 initialized all the edges will be 0
       Graph adj(m, n);
-      ExistingGraphs existingGraphs(m, n, runId % 2 + 1,
+      int operationType = runId % 2 + 1;  // alternate between adding to m and n (1 and 2
+      if (m == n) operationType = 1;      // if m==n just get the existing graphs
+      ExistingGraphs existingGraphs(m, n, operationType,
                                     kstStore_.get());  // TODO we need to get this from Config
       Logs logs(m, n, s_, t_);
-      prob_->reInitialize(m, n, s_, t_);
       for (int iter = 0; iter < iterations; iter++)
       {
-        prob_->clear();
         kstStore_->clear();
         adj = std::move(existingGraphs.getStartingGraph(iter));
+        prob_->reInitialize(adj, s_, t_);
         adj.m = m;
         adj.n = n;
-        runIteration(adj, insideIterations, m, n);
+        runIteration(adj, insideIterationArray[iter % 4], m, n);
         addTrivialEdges(adj, logs);
         updateGraphsToSave(graphsToSave, adj, maxGraphsToSave);
       }
@@ -178,20 +180,22 @@ void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
 {
   // TODO comment out the code below and watch for performance changes
   // also comment out the addedEdges part from runner.cpp and from K22Store
-  Graph best(adj);  // code to comment out // code to comment out
+  // Graph best(adj);  // code to comment out // code to comment out
   for (int iter = 0; iter < insideIterations; ++iter)
   {
-    if (adj.edges > best.edges)  // code to comment out
+    /*if (adj.edges > best.edges)  // code to comment out
     {
       best = adj;
-    }
+    }*/
     for (int u = 0; u < m; ++u)
     {
       for (int v = 0; v < n; ++v)
       {
         if (adj[u][v] == 0)
         {
-          double p = prob_->get_p(u, v);
+          double p = prob_->get_p(u, v) *
+                     Constants::PROBABILITY_MULTIPLIER;  // TODO: switch it to config if it can read
+                                                         // double values
           double rand_val = Util::randDouble();
           if (rand_val < p)
           {
@@ -208,8 +212,8 @@ void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
       kstStore_->reevalCircles(adj);
     }
   }
-  if (best.edges > adj.edges)  // TODO code to comment out probably
+  /*if (best.edges > adj.edges)  // TODO code to comment out probably
   {
     adj = best;
-  }
+  }*/
 }

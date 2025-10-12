@@ -62,3 +62,22 @@ std::string Config::outputFilename(int m, int n, int edgeCount) const
 {
   return std::format("{}Z{}_{}_{}_{}_{}.txt", graphsDirectory(), m, n, s, t, edgeCount);
 }
+
+std::string Config::executionTimeFilename() const
+{
+  return std::format("{}{}.txt", outputDirectory(), Constants::EXECUTION_TIME_FILE);
+}
+
+void Config::saveExecutionTime() const
+{
+  std::ofstream ofs(executionTimeFilename(), std::ios::app);
+  if (ofs.is_open())
+  {
+    ofs << runStats.id << ": " << runStats.getElapsedTime() << " seconds\n";
+    ofs.close();
+  }
+  else
+  {
+    throw std::runtime_error("Failed to open execution time file: " + executionTimeFilename());
+  }
+}

@@ -15,6 +15,7 @@ struct RunStats
   void start();  // tracks the global runstats
   void start(const std::string& filename);
   void save();
+  int getElapsedTime() const;
 
  private:
   std::chrono::steady_clock::time_point start_;
