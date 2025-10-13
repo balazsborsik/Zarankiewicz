@@ -1,4 +1,5 @@
 bin/
 .vscode/
 **/*.exe
-
+scripts/toinvert/**
+scripts/tocompare/**

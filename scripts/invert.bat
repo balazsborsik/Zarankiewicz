@@ -2,8 +2,8 @@
 setlocal enabledelayedexpansion
 
 REM ============================================================
-REM Build and run compare.cpp with two files from /tocompare
-REM No arguments needed — automatically uses the first two files found
+REM Build and run invert.cpp with two files from /toinvert
+REM No arguments needed — automatically uses the first file found
 REM ============================================================
 
 REM Get directory of this BAT file
@@ -18,63 +18,61 @@ REM ------------------------------------------------------------
 REM Define paths
 REM ------------------------------------------------------------
 set UTIL_DIR=%PROJECT_ROOT%\util
-set TOCOMPARE_DIR=%PROJECT_ROOT%\tocompare
+set TOINVERT_DIR=%PROJECT_ROOT%\toinvert
 
 REM ------------------------------------------------------------
 REM Check if the directory exists
 REM ------------------------------------------------------------
-if not exist "%TOCOMPARE_DIR%" (
-    echo Error: Directory "%TOCOMPARE_DIR%" does not exist.
+if not exist "%TOINVERT_DIR%" (
+    echo Error: Directory "%TOINVERT_DIR%" does not exist.
     pause
     exit /b 1
 )
 
 REM ------------------------------------------------------------
-REM Get the first two files in the tocompare folder
+REM Get the first two files in the toinvert folder
 REM ------------------------------------------------------------
 set FILECOUNT=0
-for %%F in ("%TOCOMPARE_DIR%\*") do (
+for %%F in ("%TOINVERT_DIR%\*") do (
     if exist "%%F" (
         set /a FILECOUNT+=1
         if !FILECOUNT! equ 1 set FILE1=%%F
-        if !FILECOUNT! equ 2 set FILE2=%%F
     )
 )
 
 REM Check that two files were found
-if !FILECOUNT! lss 2 (
-    echo Error: Less than two files found in "%TOCOMPARE_DIR%".
+if !FILECOUNT! lss 1 (
+    echo Error: No files found in "%TOINVERT_DIR%".
     pause
     exit /b 1
 )
 
 echo Found files:
 echo   !FILE1!
-echo   !FILE2!
 echo.
 
 REM ------------------------------------------------------------
-REM Build only if compare.exe does not exist
+REM Build only if invert.exe does not exist
 REM ------------------------------------------------------------
 cd /d "%UTIL_DIR%"
 
-if not exist "compare.exe" (
-    echo Building compare.cpp...
-    g++ -o compare compare.cpp
+if not exist "invert.exe" (
+    echo Building invert.cpp...
+    g++ -o invert invert.cpp
     if errorlevel 1 (
         echo Build failed.
         pause
         exit /b 1
     )
 ) else (
-    echo compare.exe already exists, skipping build.
+    echo invert.exe already exists, skipping build.
 )
 
 REM ------------------------------------------------------------
 REM Run the program
 REM ------------------------------------------------------------
-echo Running compare.exe...
-compare "!FILE1!" "!FILE2!"
+echo Running invert.exe...
+invert "!FILE1!"
 
 echo.
 echo Done.
