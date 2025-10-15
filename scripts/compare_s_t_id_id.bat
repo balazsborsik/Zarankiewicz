@@ -41,7 +41,7 @@ if "%~4"=="" (
 REM ------------------------------------------------------------
 REM Define paths (K{s}{t}\results) and file names
 REM ------------------------------------------------------------
-set DATA_DIR=%PROJECT_ROOT%output\K%~1%~2\results
+set DATA_DIR=%PROJECT_ROOT%output\K%~1%~2\graphs
 set FILE1=%DATA_DIR%\finalresults%~3.txt
 set FILE2=%DATA_DIR%\finalresults%~4.txt
 set UTIL_DIR=%PROJECT_ROOT%\scripts\util

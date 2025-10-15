@@ -35,7 +35,7 @@ void ExistingGraphs::addVertexToGraphM(Graph& graph, const KstStore* kstStore)
   }
   int chosenVertices[Constants::MAX_SIZE] = {};
   int bestSize = 0;
-  int iterations = pow(m, 0.5) * n / 8 + 5;
+  int iterations = pow(m, 0.5) * n / 4 + 5;
   for (int k = 0; k < iterations; ++k)
   {
     Util::shuffle(std::begin(order), std::begin(order) + n);
@@ -80,7 +80,7 @@ void ExistingGraphs::addVertexToGraphN(Graph& graph, const KstStore* kstStore)
   }
   int chosenVertices[Constants::MAX_SIZE] = {};
   int bestSize = 0;
-  int iterations = pow(n, 0.5) * m / 8 + 5;
+  int iterations = pow(n, 0.5) * m / 4 + 5;
   for (int k = 0; k < iterations; ++k)
   {
     Util::shuffle(std::begin(order), std::begin(order) + m);

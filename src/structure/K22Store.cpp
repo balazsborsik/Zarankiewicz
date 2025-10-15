@@ -45,9 +45,9 @@ void K22Store::storeKst(const Graph &adj, int u, int v)
         if (adj[u][v2] && adj[u2][v2])
         {
           Kst<2, 2> created({u, u2}, {v, v2});
-          for (int i = 0; i < 2; i++)
+          for (int i = 0; i < 2; ++i)
           {
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; ++j)
             {
               edges_in_circles_.adj[created.u_arr[i]][created.v_arr[j]]++;
             }

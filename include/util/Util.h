@@ -2,7 +2,10 @@
 #define UTIL_H
 
 #include <algorithm>
+#include <memory>
 #include <random>
+
+class KstStore;
 
 class Util
 {
@@ -18,6 +21,7 @@ class Util
   }
   static int upperBound(int m, int n, int s, int t);
   static int nCr(int n, int r);
+  static std::unique_ptr<KstStore> createKstStore(int s, int t);
 };
 
 #endif  // UTIL_H

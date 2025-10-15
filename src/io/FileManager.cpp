@@ -102,7 +102,7 @@ void FileManager::loadExistingGraphs()
         auto& arr = existingGraphs_[m][n];
         if (arr.back().edges < edgeCount)
         {
-          arr.back() = create_from_file(m, n, filename);
+          arr.back() = std::move(create_from_file(m, n, filename));
           int i = arr.size() - 1;
           while (i > 0 && arr[i - 1].edges < arr[i].edges)
           {

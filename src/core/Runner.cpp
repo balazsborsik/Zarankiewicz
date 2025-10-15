@@ -13,7 +13,7 @@
 #include "logger/Logger.h"
 #include "probability/Dynp.h"
 #include "probability/OldDynp.h"
-#include "structure/K22Store.h"
+#include "structure/KstStore.h"
 #include "util/ExistingGraphs.h"
 
 void Runner::printResults(const std::string &filename, const Results &results)
@@ -82,21 +82,6 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
       throw std::invalid_argument("Unsupported Probabilities type");
   }
 }
-std::unique_ptr<KstStore> Runner::makeKstStore(int s, int t)
-{
-  if (s == 2 && t == 2)
-  {
-    return std::make_unique<K22Store>();
-  }
-  // else if (s == 3 && t == 3)
-  // {
-  //   return std::make_unique<K33Store>();
-  // }
-  else
-  {
-    throw std::invalid_argument("Unsupported K_{s,t} store type");
-  }
-}
 
 void Runner::run()
 {
@@ -106,7 +91,7 @@ void Runner::run()
   t_ = getConfigInstance().t;
   prob_ = makeProb(getConfigInstance().probabilityType, getConfigInstance().min,
                    getConfigInstance().min, s_, t_);
-  kstStore_ = makeKstStore(s_, t_);
+  kstStore_ = Util::createKstStore(s_, t_);
   FileManager::init();
   runFullIteration(getConfigInstance().min, getConfigInstance().max, getConfigInstance().runCount,
                    getConfigInstance().iterations, getConfigInstance().insideIterations);
@@ -135,7 +120,7 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
 
 Results Runner::runInRange(int min, int max, int iterations, int insideIterations, int runId)
 {
-  int insideIterationArray[] = {1, 3, 6, 12};
+  int insideIterationArray[] = {1, 3};
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
   Logger logger(getConfigInstance().logFileName(runId));
@@ -158,7 +143,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
         prob_->reInitialize(adj, s_, t_);
         adj.m = m;
         adj.n = n;
-        runIteration(adj, insideIterationArray[iter % 4], m, n);
+        runIteration(adj, insideIterationArray[iter % 2], m, n);
         addTrivialEdges(adj, logs);
         updateGraphsToSave(graphsToSave, adj, maxGraphsToSave);
       }

@@ -4,6 +4,13 @@
 #include <limits>
 #include <stdexcept>
 
+#include "structure/K22Store.h"
+#include "structure/K33Store.h"
+#include "structure/K44Store.h"
+#include "structure/K55Store.h"
+#include "structure/K66Store.h"
+#include "structure/KstStore.h"
+
 std::mt19937 Util::gen(std::random_device{}());
 
 double Util::randDouble()
@@ -53,4 +60,32 @@ int Util::nCr(int n, int r)
     }
   }
   return ans;
+}
+
+std::unique_ptr<KstStore> Util::createKstStore(int s, int t)
+{
+  if (s == 2 && t == 2)
+  {
+    return std::make_unique<K22Store>();
+  }
+  else if (s == 3 && t == 3)
+  {
+    return std::make_unique<K33Store>();
+  }
+  else if (s == 4 && t == 4)
+  {
+    return std::make_unique<K44Store>();
+  }
+  else if (s == 5 && t == 5)
+  {
+    return std::make_unique<K55Store>();
+  }
+  else if (s == 6 && t == 6)
+  {
+    return std::make_unique<K66Store>();
+  }
+  else
+  {
+    throw std::invalid_argument("Unsupported K_{s,t} store type");
+  }
 }
