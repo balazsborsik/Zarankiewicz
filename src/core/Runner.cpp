@@ -120,7 +120,7 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
 
 Results Runner::runInRange(int min, int max, int iterations, int insideIterations, int runId)
 {
-  int insideIterationArray[] = {1, 3};
+  int insideIterationArray[] = {1, 3, 5, 7, 9};
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
   Logger logger(getConfigInstance().logFileName(runId));
@@ -143,7 +143,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
         prob_->reInitialize(adj, s_, t_);
         adj.m = m;
         adj.n = n;
-        runIteration(adj, insideIterationArray[iter % 2], m, n);
+        runIteration(adj, insideIterationArray[iter % 5], m, n);
         addTrivialEdges(adj, logs);
         updateGraphsToSave(graphsToSave, adj, maxGraphsToSave);
       }
