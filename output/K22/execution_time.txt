@@ -4,3 +4,7 @@
 3: 595 seconds
 4: 654 seconds
 5: 593 seconds
+6: 3286 seconds
+7: 12291 seconds
+8: 3223 seconds
+9: 3547 seconds
