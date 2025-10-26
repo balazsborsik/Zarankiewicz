@@ -26,7 +26,7 @@ int Util::upperBound(int m, int n, int s, int t)
     std::swap(s, t);
     std::swap(m, n);
   }
-  if (m < s) return m * s;
+  if (m < s || n < t) return m * s;
   double previous = std::numeric_limits<double>::max();
   double result = std::numeric_limits<double>::max() - 1e307;
   while (previous > result)
@@ -35,7 +35,21 @@ int Util::upperBound(int m, int n, int s, int t)
     result = ((double)(t - 1) / nCr(p, s - 1)) * nCr(m, s) + n * ((p + 1) * (s - 1)) / (double)s;
     p++;
   }
-  return (int)previous;
+  double previous2 = std::numeric_limits<double>::max();
+  if (s != t)
+  {
+    std::swap(s, t);
+    std::swap(m, n);
+    p = s - 1;
+    double result2 = std::numeric_limits<double>::max() - 1e307;
+    while (previous2 > result2)
+    {
+      previous2 = result2;
+      result2 = ((double)(t - 1) / nCr(p, s - 1)) * nCr(m, s) + n * ((p + 1) * (s - 1)) / (double)s;
+      p++;
+    }
+  }
+  return previous < previous2 ? (int)previous : (int)previous2;
 }
 
 int Util::nCr(int n, int r)
