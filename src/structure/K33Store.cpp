@@ -8,18 +8,16 @@ void K33Store::clear()
   edges_in_circles_.reset();
 }
 
-bool K33Store::createsKst(const Graph &adj, int u, int v) const
+bool K33Store::createsKst(const Graph& adj, int u, int v) const
 {
   int m = adj.m;
   int n = adj.n;
   for (int u2 = 0; u2 < m; ++u2)
   {
-    if (u2 == u) continue;
     if (adj[u2][v])
     {
       for (int v2 = 0; v2 < n; ++v2)
       {
-        if (v2 == v) continue;
         if (adj[u][v2] && adj[u2][v2])
         {
           for (int u3 = u2 + 1; u3 < m; ++u3)
@@ -42,18 +40,16 @@ bool K33Store::createsKst(const Graph &adj, int u, int v) const
   return false;
 }
 
-void K33Store::storeKst(const Graph &adj, int u, int v)
+void K33Store::storeKst(const Graph& adj, int u, int v)
 {
   int m = adj.m;
   int n = adj.n;
   for (int u2 = 0; u2 < m; ++u2)
   {
-    if (u2 == u) continue;
     if (adj[u2][v])
     {
       for (int v2 = 0; v2 < n; ++v2)
       {
-        if (v2 == v) continue;
         if (adj[u][v2] && adj[u2][v2])
         {
           for (int u3 = u2 + 1; u3 < m; ++u3)
@@ -83,11 +79,11 @@ void K33Store::storeKst(const Graph &adj, int u, int v)
   }
 }
 
-void K33Store::reevalCircles(const Graph &adj)
+void K33Store::reevalCircles(const Graph& adj)
 {
   circles_.erase(
       std::remove_if(circles_.begin(), circles_.end(),
-                     [&adj, this](const Kst<3, 3> &circle)
+                     [&adj, this](const Kst<3, 3>& circle)
                      {
                        for (int i = 0; i < 3; ++i)
                        {
@@ -107,12 +103,12 @@ void K33Store::reevalCircles(const Graph &adj)
       circles_.end());
 }
 
-bool K33Store::reflipCircle(Graph &adj, Probabilities &prob)
+bool K33Store::reflipCircle(Graph& adj, Probabilities& prob)
 {
   if (circles_.empty()) return false;
   std::pair<int, int> edge = std::make_pair(circles_[0].u_arr[0], circles_[0].v_arr[0]);
   int degree = 0;
-  for (const auto &elm : circles_)
+  for (const auto& elm : circles_)
   {
     for (int i = 0; i < 3; ++i)
     {

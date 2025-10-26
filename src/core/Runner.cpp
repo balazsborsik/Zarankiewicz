@@ -16,7 +16,7 @@
 #include "structure/KstStore.h"
 #include "util/ExistingGraphs.h"
 
-void Runner::printResults(const std::string &filename, const Results &results)
+void Runner::printResults(const std::string& filename, const Results& results)
 {
   std::ofstream outfile;
   outfile.open(filename);
@@ -35,21 +35,21 @@ void Runner::printResults(const std::string &filename, const Results &results)
   }
 }
 
-void Runner::updateGraphsToSave(Graph (&graphsToSave)[Constants::MAX_GRAPHS_TO_SAVE], Graph &adj,
+void Runner::updateGraphsToSave(Graph (&graphsToSave)[Constants::MAX_GRAPHS_TO_SAVE], Graph& adj,
                                 int maxGraphsToSave)
 {
   int edgeNum = adj.edges;
   if (edgeNum > graphsToSave[maxGraphsToSave - 1].edges &&
       std::all_of(std::begin(graphsToSave), std::end(graphsToSave),
-                  [edgeNum](const auto &a) { return a.edges != edgeNum; }))
+                  [edgeNum](const auto& a) { return a.edges != edgeNum; }))
   {
     graphsToSave[maxGraphsToSave - 1] = adj;
     std::sort(std::begin(graphsToSave), std::end(graphsToSave),
-              [](const auto &a, const auto &b) { return a.edges > b.edges; });
+              [](const auto& a, const auto& b) { return a.edges > b.edges; });
   }
 }
 
-int Runner::addTrivialEdges(Graph &adj, Logs &logs)  // TODO! becnchmark the other version where
+int Runner::addTrivialEdges(Graph& adj, Logs& logs)  // TODO! becnchmark the other version where
                                                      // it picks all the edges in random order
 {
   int m = adj.m;
@@ -126,7 +126,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
   Logger logger(getConfigInstance().logFileName(runId));
   for (int m = min; m <= max; ++m)  // TODO szimmetrikus esetek
   {
-    for (int n = m; n <= max; ++n)
+    for (int n = (s_ == t_) ? m : min; n <= max; ++n)
     {
       Graph graphsToSave[Constants::MAX_GRAPHS_TO_SAVE] =
           {};  // because its 0 initialized all the edges will be 0
@@ -161,7 +161,7 @@ Results Runner::runInRange(int min, int max, int iterations, int insideIteration
   return res;
 }
 
-void Runner::runIteration(Graph &adj, int insideIterations, int m, int n)
+void Runner::runIteration(Graph& adj, int insideIterations, int m, int n)
 {
   // TODO comment out the code below and watch for performance changes
   // also comment out the addedEdges part from runner.cpp and from K22Store

@@ -15,6 +15,7 @@ REM Get the directory of this BAT file
 FOR %%A IN ("%~dp0.") DO SET PROJECT_ROOT=%%~dpA
 
 set K22_DIR=%PROJECT_ROOT%output\K22\graphs
+set K23_DIR=%PROJECT_ROOT%output\K23\graphs
 set K33_DIR=%PROJECT_ROOT%output\K33\graphs
 set K44_DIR=%PROJECT_ROOT%output\K44\graphs
 set K55_DIR=%PROJECT_ROOT%output\K55\graphs
@@ -53,6 +54,13 @@ echo   %K22_DIR% %FLAG% %maxGraphsToKeep%
 echo.
 
 cleanup_output %K22_DIR% %FLAG% %maxGraphsToKeep%
+echo.
+echo.
+echo Running cleanup_output.exe with:
+echo   %K23_DIR% %FLAG% %maxGraphsToKeep%
+echo.
+
+cleanup_output %K23_DIR% %FLAG% %maxGraphsToKeep%
 echo.
 echo.
 echo Running cleanup_output.exe with:

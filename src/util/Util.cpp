@@ -1,10 +1,12 @@
 #include "util/Util.h"
 
 #include <algorithm>
+#include <iostream>
 #include <limits>
 #include <stdexcept>
 
 #include "structure/K22Store.h"
+#include "structure/K23Store.h"
 #include "structure/K33Store.h"
 #include "structure/K44Store.h"
 #include "structure/K55Store.h"
@@ -20,12 +22,12 @@ double Util::randDouble()
 
 int Util::upperBound(int m, int n, int s, int t)
 {
-  int p = s - 1;
   if (m > n)
   {
     std::swap(s, t);
     std::swap(m, n);
   }
+  int p = s - 1;
   if (m < s || n < t) return m * s;
   double previous = std::numeric_limits<double>::max();
   double result = std::numeric_limits<double>::max() - 1e307;
@@ -81,6 +83,10 @@ std::unique_ptr<KstStore> Util::createKstStore(int s, int t)
   if (s == 2 && t == 2)
   {
     return std::make_unique<K22Store>();
+  }
+  else if (s == 2 && t == 3)
+  {
+    return std::make_unique<K23Store>();
   }
   else if (s == 3 && t == 3)
   {
