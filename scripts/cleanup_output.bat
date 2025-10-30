@@ -1,8 +1,11 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 
+REM ------------------------------------------------------------
+REM Handle input parameter
+REM ------------------------------------------------------------
 if "%~1"=="" (
-    echo Error: Missing maxGraphsToKeep parameter defaulting with 5.
+    echo Error: Missing maxGraphsToKeep parameter, defaulting to 5.
     echo Usage: cleanup_output.bat ^<maxGraphsToKeep^>
     set "maxGraphsToKeep=5"
 ) else (
@@ -10,27 +13,19 @@ if "%~1"=="" (
 )
 
 echo Using maxGraphsToKeep=%maxGraphsToKeep%
+echo.
 
-REM Get the directory of this BAT file
+REM ------------------------------------------------------------
+REM Determine project and utility directories
+REM ------------------------------------------------------------
 FOR %%A IN ("%~dp0.") DO SET PROJECT_ROOT=%%~dpA
-
-set K22_DIR=%PROJECT_ROOT%output\K22\graphs
-set K23_DIR=%PROJECT_ROOT%output\K23\graphs
-set K33_DIR=%PROJECT_ROOT%output\K33\graphs
-set K44_DIR=%PROJECT_ROOT%output\K44\graphs
-set K55_DIR=%PROJECT_ROOT%output\K55\graphs
-set K66_DIR=%PROJECT_ROOT%output\K66\graphs
-
+set UTIL_DIR=%PROJECT_ROOT%scripts\util
 set FLAG=-d
 
-REM ------------------------------------------------------------
-REM Change to util folder (where cleanup_output.cpp is)
-REM ------------------------------------------------------------
-set UTIL_DIR=%PROJECT_ROOT%\scripts\util
 cd /d "%UTIL_DIR%"
 
 REM ------------------------------------------------------------
-REM Build cleanup_output.cpp using g++
+REM Build cleanup_output.cpp if not already built
 REM ------------------------------------------------------------
 if not exist "cleanup_output.exe" (
     echo Building cleanup_output.cpp...
@@ -44,51 +39,24 @@ if not exist "cleanup_output.exe" (
     echo cleanup_output.exe already exists, skipping build.
 )
 
+echo.
+
 REM ------------------------------------------------------------
-REM Run the program with full paths
+REM Loop over all K{a}{b} directories (2 <= a <= b <= 6)
 REM ------------------------------------------------------------
-echo.
-echo.
-echo Running cleanup_output.exe with:
-echo   %K22_DIR% %FLAG% %maxGraphsToKeep%
-echo.
+for /L %%a in (2,1,6) do (
+    for /L %%b in (%%a,1,6) do (
+        set folder=K%%a%%b
+        set graphDir=%PROJECT_ROOT%output\!folder!\graphs
 
-cleanup_output %K22_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-echo.
-echo Running cleanup_output.exe with:
-echo   %K23_DIR% %FLAG% %maxGraphsToKeep%
-echo.
+        echo.
+        echo Running cleanup_output.exe with:
+        echo   !graphDir! %FLAG% %maxGraphsToKeep%
+        echo.
 
-cleanup_output %K23_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-echo.
-echo Running cleanup_output.exe with:
-echo   %K33_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-
-cleanup_output %K33_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-echo.
-echo Running cleanup_output.exe with:
-echo   %K44_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-
-cleanup_output %K44_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-echo.
-echo Running cleanup_output.exe with:
-echo   %K55_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-
-cleanup_output %K55_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-echo.
-echo Running cleanup_output.exe with:
-echo   %K66_DIR% %FLAG% %maxGraphsToKeep%
-echo.
-
-cleanup_output %K66_DIR% %FLAG% %maxGraphsToKeep%
+        cleanup_output "!graphDir!" %FLAG% %maxGraphsToKeep%
+    )
+)
 
 echo.
 echo Done.

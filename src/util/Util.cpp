@@ -7,9 +7,18 @@
 
 #include "structure/K22Store.h"
 #include "structure/K23Store.h"
+#include "structure/K24Store.h"
+#include "structure/K25Store.h"
+#include "structure/K26Store.h"
 #include "structure/K33Store.h"
+#include "structure/K34Store.h"
+#include "structure/K35Store.h"
+#include "structure/K36Store.h"
 #include "structure/K44Store.h"
+#include "structure/K45Store.h"
+#include "structure/K46Store.h"
 #include "structure/K55Store.h"
+#include "structure/K56Store.h"
 #include "structure/K66Store.h"
 #include "structure/KstStore.h"
 
@@ -80,32 +89,68 @@ int Util::nCr(int n, int r)
 
 std::unique_ptr<KstStore> Util::createKstStore(int s, int t)
 {
-  if (s == 2 && t == 2)
+  switch (s)
   {
-    return std::make_unique<K22Store>();
+    case 2:
+      switch (t)
+      {
+        case 2:
+          return std::make_unique<K22Store>();
+        case 3:
+          return std::make_unique<K23Store>();
+        case 4:
+          return std::make_unique<K24Store>();
+        case 5:
+          return std::make_unique<K25Store>();
+        case 6:
+          return std::make_unique<K26Store>();
+      }
+      break;
+
+    case 3:
+      switch (t)
+      {
+        case 3:
+          return std::make_unique<K33Store>();
+        case 4:
+          return std::make_unique<K34Store>();
+        case 5:
+          return std::make_unique<K35Store>();
+        case 6:
+          return std::make_unique<K36Store>();
+      }
+      break;
+
+    case 4:
+      switch (t)
+      {
+        case 4:
+          return std::make_unique<K44Store>();
+        case 5:
+          return std::make_unique<K45Store>();
+        case 6:
+          return std::make_unique<K46Store>();
+      }
+      break;
+
+    case 5:
+      switch (t)
+      {
+        case 5:
+          return std::make_unique<K55Store>();
+        case 6:
+          return std::make_unique<K56Store>();
+      }
+      break;
+
+    case 6:
+      switch (t)
+      {
+        case 6:
+          return std::make_unique<K66Store>();
+      }
+      break;
   }
-  else if (s == 2 && t == 3)
-  {
-    return std::make_unique<K23Store>();
-  }
-  else if (s == 3 && t == 3)
-  {
-    return std::make_unique<K33Store>();
-  }
-  else if (s == 4 && t == 4)
-  {
-    return std::make_unique<K44Store>();
-  }
-  else if (s == 5 && t == 5)
-  {
-    return std::make_unique<K55Store>();
-  }
-  else if (s == 6 && t == 6)
-  {
-    return std::make_unique<K66Store>();
-  }
-  else
-  {
-    throw std::invalid_argument("Unsupported K_{s,t} store type");
-  }
+
+  throw std::invalid_argument("Unsupported K_{s,t} store type");
 }

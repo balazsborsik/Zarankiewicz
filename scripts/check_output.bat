@@ -1,21 +1,17 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 
+REM ------------------------------------------------------------
 REM Get the directory of this BAT file
+REM ------------------------------------------------------------
 FOR %%A IN ("%~dp0.") DO SET PROJECT_ROOT=%%~dpA
-
-set K22_DIR=%PROJECT_ROOT%output\K22\graphs
-set K33_DIR=%PROJECT_ROOT%output\K33\graphs
-set K44_DIR=%PROJECT_ROOT%output\K44\graphs
-set K55_DIR=%PROJECT_ROOT%output\K55\graphs
-set K66_DIR=%PROJECT_ROOT%output\K66\graphs
 
 set FLAG=-l
 
 REM ------------------------------------------------------------
 REM Change to util folder (where check_output.cpp is)
 REM ------------------------------------------------------------
-set UTIL_DIR=%PROJECT_ROOT%\scripts\util
+set UTIL_DIR=%PROJECT_ROOT%scripts\util
 cd /d "%UTIL_DIR%"
 
 REM ------------------------------------------------------------
@@ -34,43 +30,22 @@ if not exist "check_output.exe" (
 )
 
 REM ------------------------------------------------------------
-REM Run the program with full paths
+REM Loop through all K{a}{b} directories where 2 <= a <= b <= 6
 REM ------------------------------------------------------------
-echo.
-echo.
-echo Running check_output.exe with:
-echo   %K22_DIR% %FLAG%
-echo.
+for /L %%a in (2,1,6) do (
+    for /L %%b in (%%a,1,6) do (
+        set folder=K%%a%%b
+        set GRAPH_DIR=%PROJECT_ROOT%output\!folder!\graphs
 
-check_output %K22_DIR% %FLAG%
-echo.
-echo.
-echo Running check_output.exe with:
-echo   %K33_DIR% %FLAG%
-echo.
+        echo.
+        echo.
+        echo Running check_output.exe with:
+        echo   !GRAPH_DIR! %FLAG%
+        echo.
 
-check_output %K33_DIR% %FLAG%
-echo.
-echo.
-echo Running check_output.exe with:
-echo   %K44_DIR% %FLAG%
-echo.
-
-check_output %K44_DIR% %FLAG%
-echo.
-echo.
-echo Running check_output.exe with:
-echo   %K55_DIR% %FLAG%
-echo.
-
-check_output %K55_DIR% %FLAG%
-echo.
-echo.
-echo Running check_output.exe with:
-echo   %K66_DIR% %FLAG%
-echo.
-
-check_output %K66_DIR% %FLAG%
+        check_output "!GRAPH_DIR!" %FLAG%
+    )
+)
 
 echo.
 echo Done.
