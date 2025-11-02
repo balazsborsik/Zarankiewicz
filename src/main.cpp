@@ -8,14 +8,23 @@
 #include "io/FileManager.h"
 #include "logger/RunStats.h"
 
-int main()
+int main(const int argc, const char* argv[])
 {
   RunStats runStats;
-  runStats.start();
 
   Runner runner;
-  runner.run();
-
+  if (argc > 1)
+  {
+    runStats.start("experiments/" + std::string(argv[1]) +
+                   std::string(Constants::OUTPUT_DIRECTORY) + "/" +
+                   std::string(Constants::RUNSTATS_FILE) + ".txt");
+    runner.run(argv[1]);
+  }
+  else
+  {
+    runStats.start();
+    runner.run();
+  }
   runStats.save();
   getConfigInstance().runStats.save();
   getConfigInstance().saveExecutionTime();

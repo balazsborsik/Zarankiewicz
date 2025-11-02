@@ -22,19 +22,19 @@ class Runner
 
   Results runInRange(int min, int max, int iterations, int insideIterations, int runId);
 
-  void runIteration(Graph &adj, int insideIterations, int m, int n);
+  void runIteration(Graph& adj, int insideIterations, int m, int n);
 
   std::unique_ptr<Probabilities> makeProb(int type, int m, int n, int s, int t);
   std::unique_ptr<KstStore> makeKstStore(int s, int t);
-  int addTrivialEdges(Graph &adj, Logs &logs);
-  void printResults(const std::string &filename, const Results &results);
-  void updateGraphsToSave(Graph (&graphs)[Constants::MAX_GRAPHS_TO_SAVE], Graph &adj,
+  int addTrivialEdges(Graph& adj, Logs& logs);
+  void printResults(const std::string& filename, const Results& results);
+  void updateGraphsToSave(Graph (&graphs)[Constants::MAX_GRAPHS_TO_SAVE], Graph& adj,
                           int maxGraphsToSave);
   void getStartingGraph() {}
 
  public:
   Runner() {};
-  void run();
+  void run(const char* runGroup = "");
 };
 
 #endif  // RUNNER_H

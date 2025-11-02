@@ -8,7 +8,9 @@
 struct Config
 {
  public:
+  std::string outputPrefix = "";
   RunStats runStats;
+  double probabilityMultiplier = 1.0;
   int runCount;
   int iterations;
   int insideIterations;

@@ -22,7 +22,7 @@ void Runner::printResults(const std::string& filename, const Results& results)
   outfile.open(filename);
   if (!outfile.is_open())
   {
-    throw std::runtime_error("Could not open log file: " + filename);
+    throw std::runtime_error("Could not open results file: " + filename);
   }
   size_t siz = results.size();
   for (size_t i = 0; i < siz; ++i)
@@ -83,10 +83,19 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
   }
 }
 
-void Runner::run()
+void Runner::run(const char* runGroup)
 {
   std::vector<std::vector<int>> results(39, std::vector<int>(39, 0));
-  getConfigInstance().loadConfig(std::string(Constants::CONFIG_FILE));
+  if (false)
+  {
+    getConfigInstance().loadConfig(std::string(Constants::CONFIG_FILE));
+  }
+  else
+  {
+    getConfigInstance().outputPrefix = "experiments/" + std::string(runGroup);
+    getConfigInstance().loadConfig("experiments/" + std::string(runGroup) + "_" +
+                                   std::string(Constants::CONFIG_FILE));
+  }
   s_ = getConfigInstance().s;
   t_ = getConfigInstance().t;
   prob_ = makeProb(getConfigInstance().probabilityType, getConfigInstance().min,
@@ -179,8 +188,8 @@ void Runner::runIteration(Graph& adj, int insideIterations, int m, int n)
         if (adj[u][v] == 0)
         {
           double p = prob_->get_p(u, v) *
-                     Constants::PROBABILITY_MULTIPLIER;  // TODO: switch it to config if it can read
-                                                         // double values
+                     getConfigInstance().probabilityMultiplier;  // TODO: switch it to config if it
+                                                                 // can read double values
           double rand_val = Util::randDouble();
           if (rand_val < p)
           {

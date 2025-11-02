@@ -17,6 +17,7 @@ void Config::loadConfig(const std::string& filename)
     max = loader.getInt("max", 40);
     probabilityType = loader.getInt("probabilityType", 0);
     maxGraphsToSave = loader.getInt("maxGraphsToSave", 3);
+    probabilityMultiplier = loader.getInt("probabilityPercent", 100) / 100.0;
     runStats.start(outputDirectory() + std::string(Constants::RUNSTATS_FILE) + ".txt");
   }
   else
@@ -32,7 +33,7 @@ void Config::loadConfig(const std::string& filename)
 
 std::string Config::outputDirectory() const
 {
-  return std::format("{}/K{}{}/", Constants::OUTPUT_DIRECTORY, s, t);
+  return std::format("{}{}/K{}{}/", outputPrefix, Constants::OUTPUT_DIRECTORY, s, t);
 }
 
 std::string Config::graphsDirectory() const
