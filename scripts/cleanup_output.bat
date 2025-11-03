@@ -5,9 +5,9 @@ REM ------------------------------------------------------------
 REM Handle input parameter
 REM ------------------------------------------------------------
 if "%~1"=="" (
-    echo Error: Missing maxGraphsToKeep parameter, defaulting to 5.
+    echo Error: Missing maxGraphsToKeep parameter, defaulting to 2.
     echo Usage: cleanup_output.bat ^<maxGraphsToKeep^>
-    set "maxGraphsToKeep=5"
+    set "maxGraphsToKeep=2"
 ) else (
     set "maxGraphsToKeep=%~1"
 )

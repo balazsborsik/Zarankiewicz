@@ -166,6 +166,6 @@ int main(int argc, char* argv[])
       }
     }
   }
-  if (problematic_filenames.empty()) cout << "All the files in the given directory are c4 free";
+  if (problematic_filenames.empty()) cout << "All the files in the given directory are Kst free";
   return 0;
 }
