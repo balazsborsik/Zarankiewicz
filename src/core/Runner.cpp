@@ -13,6 +13,7 @@
 #include "logger/Logger.h"
 #include "probability/Dynp.h"
 #include "probability/OldDynp.h"
+#include "probability/OldDynpSymmetric.h"
 #include "structure/KstStore.h"
 #include "util/ExistingGraphs.h"
 
@@ -78,6 +79,8 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
       return std::make_unique<Dynp>(m, n, s, t);
     case 1:
       return std::make_unique<OldDynp>(m, n, s, t);
+    case 2:
+      return std::make_unique<OldDynpSymmetric>(m, n, s, t);  // uniform probability
     default:
       throw std::invalid_argument("Unsupported Probabilities type");
   }
