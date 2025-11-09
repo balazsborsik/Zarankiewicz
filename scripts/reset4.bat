@@ -1,8 +1,8 @@
 @echo off
-set "test1_KST=K34"
-set "test2_KST=K35"
-set "test3_KST=K35"
-set "test4_KST=K35"
+set "test1_KST=K35"
+set "test2_KST=K36"
+set "test3_KST=K36"
+set "test4_KST=K36"
 
 set "test1_DIR=%~dp0..\experiments\test1output\%test1_KST%"
 set "test2_DIR=%~dp0..\experiments\test2output\%test2_KST%"
