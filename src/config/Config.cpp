@@ -19,6 +19,7 @@ void Config::loadConfig(const std::string& filename)
     maxGraphsToSave = loader.getInt("maxGraphsToSave", 3);
     probabilityMultiplier = loader.getInt("probabilityPercent", 100) / 100.0;
     runStats.start(outputDirectory() + std::string(Constants::RUNSTATS_FILE) + ".txt");
+    withIterations = loader.getInt("withIterations", 1) != 0;
   }
   else
   {

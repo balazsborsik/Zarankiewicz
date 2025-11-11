@@ -11,6 +11,7 @@ struct Config
   std::string outputPrefix = "";
   RunStats runStats;
   double probabilityMultiplier = 1.0;
+  bool withIterations = true;
   int runCount;
   int iterations;
   int insideIterations;

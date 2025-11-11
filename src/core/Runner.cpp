@@ -88,8 +88,7 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
 
 void Runner::run(const char* runGroup)
 {
-  std::vector<std::vector<int>> results(39, std::vector<int>(39, 0));
-  if (false)
+  if (runGroup == nullptr || std::string(runGroup).empty())
   {
     getConfigInstance().loadConfig(std::string(Constants::CONFIG_FILE));
   }
@@ -133,6 +132,10 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
 Results Runner::runInRange(int min, int max, int iterations, int insideIterations, int runId)
 {
   int insideIterationArray[] = {1, 3, 5, 7, 9};
+  if (!getConfigInstance().withIterations)
+  {
+    std::fill(std::begin(insideIterationArray), std::end(insideIterationArray), 0);
+  }
   int maxGraphsToSave = getConfigInstance().maxGraphsToSave;
   Results res = {};
   Logger logger(getConfigInstance().logFileName(runId));
