@@ -1,6 +1,7 @@
 @echo off
 echo Installing Git hooks...
-copy "%~dp0hooks\pre-commit.bat" "%~dp0.git\hooks\pre-commit.bat"
+copy "%~dp0hooks\pre_commit.bat" "%~dp0.git\hooks\pre_commit.bat"
+copy "%~dp0hooks\pre-commit" "%~dp0.git\hooks\pre-commit"
 echo Done.
 echo Creating folders...
 call %~dp0scripts\generate_folders.bat

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Pre-commit hook calling a Windows batch file
+
+echo "-------------------------------"
+echo "PRE-COMMIT HOOK IS RUNNING"
+echo "-------------------------------"
+cmd.exe /c "$BAT_SCRIPT"
+# Run the batch script via cmd.exe
+cmd.exe /c "pre_commit.bat"
+exit 0
