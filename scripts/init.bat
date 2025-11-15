@@ -1,2 +1,2 @@
-if not exist "tocompare" mkdir "tocompare"
-if not exist "toinvert" mkdir "toinvert"
+if not exist "%~dp0tocompare" mkdir "%~dp0tocompare"
+if not exist "%~dp0toinvert" mkdir "%~dp0toinvert"
