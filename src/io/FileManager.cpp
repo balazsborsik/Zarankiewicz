@@ -3,8 +3,8 @@
 #include <filesystem>
 #include <regex>
 
-#include "config/Config.h"
 #include "config/Constants.h"
+#include "core/Graph.h"
 
 std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE>
     FileManager::existingGraphs_[Constants::MAX_SIZE + 1][Constants::MAX_SIZE + 1] = {};
@@ -83,13 +83,12 @@ void FileManager::print_graph(const Graph& graph, std::ostream& out)
   }
 }
 
-void FileManager::loadExistingGraphs()
+void FileManager::loadExistingGraphs(const std::string& directory)
 {
   try
   {
     std::regex re(R"(Z(\d+)_(\d+)_(\d+)_(\d+)_(\d+)\.txt)");
-    for (const auto& entry :
-         std::filesystem::directory_iterator(getConfigInstance().graphsDirectory()))
+    for (const auto& entry : std::filesystem::directory_iterator(directory))
     {
       std::smatch match;
       std::string filename = entry.path().string();
@@ -141,7 +140,7 @@ std::array<Graph, Constants::MAX_GRAPHS_TO_SAVE> FileManager::getExistingGraphs(
   return existingGraphs_[m][n];
 }
 
-void FileManager::init()
+void FileManager::init(const std::string& directory)
 {
-  loadExistingGraphs();
+  loadExistingGraphs(directory);
 }

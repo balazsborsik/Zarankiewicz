@@ -103,7 +103,7 @@ void Runner::run(const char* runGroup)
   prob_ = makeProb(getConfigInstance().probabilityType, getConfigInstance().min,
                    getConfigInstance().min, s_, t_);
   kstStore_ = Util::createKstStore(s_, t_);
-  FileManager::init();
+  FileManager::init(getConfigInstance().graphsDirectory());
   runFullIteration(getConfigInstance().min, getConfigInstance().max, getConfigInstance().runCount,
                    getConfigInstance().iterations, getConfigInstance().insideIterations);
 }
@@ -112,7 +112,7 @@ void Runner::runFullIteration(int min, int max, int runCount, int iterations, in
 {
   for (int runId = 0; runId < runCount; ++runId)
   {
-    FileManager::loadExistingGraphs();
+    FileManager::loadExistingGraphs(getConfigInstance().graphsDirectory());
     Results res = runInRange(min, max, iterations, insideIterations, runId);
     printResults(getConfigInstance().resultsFileName(runId), res);
     for (size_t i = 0; i < res.size(); ++i)
