@@ -1,10 +1,35 @@
 #!/bin/sh
-# Pre-commit hook calling a Windows batch file
+# Pre-commit hook (Git Bash)
 
 echo "-------------------------------"
 echo "PRE-COMMIT HOOK IS RUNNING"
 echo "-------------------------------"
-cmd.exe /c "$BAT_SCRIPT"
-# Run the batch script via cmd.exe
-cmd.exe /c "pre_commit.bat"
+
+# Absolute path to this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Path to the .bat that wraps get_results.exe
+UPDATE_BAT="$REPO_ROOT/scripts/update_current_results.bat"
+
+# Call the .bat directly (Git Bash can run .bat files)
+"$UPDATE_BAT"
+
+# Now loop through K{a}{b} folders and stage current_results.txt
+for a in $(seq 2 6); do
+  for b in $(seq $a 6); do
+    FOLDER="K${a}${b}"
+    RESULT_FILE="$REPO_ROOT/output/$FOLDER/current_results.txt"
+
+    if [ -f "$RESULT_FILE" ]; then
+      git add "$RESULT_FILE"
+      echo "Staged $RESULT_FILE"
+    else
+      echo "WARNING: $RESULT_FILE was not created."
+      exit 1
+    fi
+  done
+done
+
+echo "All current_results.txt files staged."
 exit 0
