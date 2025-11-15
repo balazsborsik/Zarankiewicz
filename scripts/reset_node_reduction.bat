@@ -19,4 +19,4 @@ call copy_no_replace.bat "%destination_DIR%\%test2_KST%\graphs" "%test2_DIR%\gra
 call .\util\shuffle_rows.exe "%destination_DIR%\%test2_KST%\graphs"
 
 call cleanup_output.bat
-call update_current_results_inside_experiments.bat
+call .\util\get_results.exe output\K22\graphs experiments\current_results.txt
