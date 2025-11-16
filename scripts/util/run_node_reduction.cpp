@@ -280,6 +280,6 @@ int main(int argc, char* argv[])
   }
   kstStore = Util::createKstStore(s, t);
   readAllGraphs(argv[1]);
-  for (int i = 0; i < 10; i++) runIteration();
+  for (int i = 0; i < 3; i++) runIteration();
   printTop2Graphs(argv[1]);
 }

@@ -1,18 +1,47 @@
-set "S=3"
-set "T=6"
+@echo off
+setlocal enabledelayedexpansion
+
+set "S=4"
+set "T=4"
 
 set "test1_KST=K%S%%T%"
 set "test2_KST=K%S%%T%"
 
-set "test1_DIR=%~dp0..\experiments\nodetest1output\%test1_KST%\graphs"
-set "test2_DIR=%~dp0..\experiments\nodetest2output\%test2_KST%\graphs"
+set "test1_DIR=..\experiments\nodetest1output\%test1_KST%\graphs"
+set "test2_DIR=..\experiments\nodetest2output\%test2_KST%\graphs"
 
-call .\util\shuffle_rows.exe "..\experiments\nodetest1output\%test1_KST%\graphs"
- 
-if "%S%"=="%T%" (
-start "test1" cmd /k "cd .. && .\scripts\util\run_node_reduction.exe %test1_DIR% %S% %T% && .\scripts\util\cleanup_oneside_of_symmetric_output %test1_DIR% -d && .\scripts\util\get_results %test1_DIR% experiments\test1_results.txt && .\scripts\util\compare experiments\test1_results.txt experiments\current_results.txt"
-start "test2" cmd /k "cd .. && .\scripts\util\run_node_reduction.exe %test2_DIR% %S% %T% && .\scripts\util\cleanup_oneside_of_symmetric_output %test2_DIR% -d && .\scripts\util\get_results %test2_DIR% experiments\test2_results.txt && .\scripts\util\compare experiments\test2_results.txt experiments\current_results.txt"
+set "TEST1_RESULTS=..\experiments\test1_results.txt"
+set "TEST2_RESULTS=..\experiments\test2_results.txt"
+set "CURRENT_RESULTS=..\experiments\current_results.txt"
+
+for /l %%i in (1,1,10) do (
+    set /a mod=%%i %% 3
+
+if !mod! == 0 (
+ ..\scripts\util\shuffle_graphs.exe "%test1_DIR%"
+ ..\scripts\util\shuffle_graphs.exe "%test2_DIR%"
+)
+    if "%S%"=="%T%" (
+        ..\scripts\util\run_node_reduction.exe %test1_DIR% %S% %T% 
+        ..\scripts\util\cleanup_oneside_of_symmetric_output %test1_DIR% -d >nul 2>&1
+    ) else (
+        ..\scripts\util\run_node_reduction.exe %test1_DIR% %S% %T% 
+    )
+    ..\scripts\util\get_results %test1_DIR% %TEST1_RESULTS% 
+
+    if "%S%"=="%T%" (
+        ..\scripts\util\run_node_reduction.exe %test2_DIR% %S% %T% 
+        ..\scripts\util\cleanup_oneside_of_symmetric_output %test2_DIR% -d >nul 2>&1
+    ) else (
+        ..\scripts\util\run_node_reduction.exe %test2_DIR% %S% %T% 
+    )
+    ..\scripts\util\get_results %test2_DIR% %TEST2_RESULTS% 
+)
+
+REM Run compare only once in two CMD windows
+if exist %TEST1_RESULTS% if exist %TEST2_RESULTS% (
+    start "Compare Test2" cmd /k "..\scripts\util\compare %TEST2_RESULTS% %CURRENT_RESULTS% "
+    start "Compare Test1" cmd /k "..\scripts\util\compare %TEST1_RESULTS% %CURRENT_RESULTS% "
 ) else (
-start "test1" cmd /k "cd .. && .\scripts\util\run_node_reduction.exe %test1_DIR% %S% %T% && .\scripts\util\get_results %test1_DIR% experiments\test1_results.txt && .\scripts\util\compare experiments\test1_results.txt experiments\current_results.txt"
-start "test2" cmd /k "cd .. && .\scripts\util\run_node_reduction.exe %test2_DIR% %S% %T% && .\scripts\util\get_results %test2_DIR% experiments\test2_results.txt && .\scripts\util\compare experiments\test2_results.txt experiments\current_results.txt"
+    echo ERROR: Results files not found after all iterations
 )
