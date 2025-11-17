@@ -1,3 +1,8 @@
+copy ..\output\K44\graphs\* ..\experiments\test2output\K44\graphs\
+copy ..\output\K44\graphs\* ..\experiments\test4output\K44\graphs\
+
+
+
 start "test1" cmd /k "cd .. && .\bin\program.exe test1 && .\scripts\util\compare experiments\test1output\K44\results\finalresults0.txt experiments\current_results.txt"
 start "test2" cmd /k "cd .. && .\bin\program.exe test2 && .\scripts\util\compare experiments\test2output\K44\results\finalresults0.txt experiments\current_results.txt
 start "test3" cmd /k "cd .. && .\bin\program.exe test3 && .\scripts\util\compare experiments\test3output\K44\results\finalresults0.txt experiments\current_results.txt"
