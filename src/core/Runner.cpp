@@ -80,7 +80,19 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
     case 1:
       return std::make_unique<OldDynp>(m, n, s, t);
     case 2:
-      return std::make_unique<OldDynpSymmetric>(m, n, s, t);  // uniform probability
+      return std::make_unique<OldDynpSymmetric>(m, n, s, t);  // GEOMETRIC_MEAN
+    case 20:
+      return std::make_unique<OldDynpSymmetric>(
+          m, n, s, t, OldDynpSymmetricType::ARITHMETIC_MEAN);  // ARITHMETIC_MEAN
+    case 21:
+      return std::make_unique<OldDynpSymmetric>(
+          m, n, s, t, OldDynpSymmetricType::GEOMETRIC_MEAN);  // GEOMETRIC_MEAN
+    case 22:
+      return std::make_unique<OldDynpSymmetric>(
+          m, n, s, t, OldDynpSymmetricType::HARMONIC_MEAN);  // HARMONIC_MEAN
+    case 23:
+      return std::make_unique<OldDynpSymmetric>(
+          m, n, s, t, OldDynpSymmetricType::QUADRATIC_MEAN);  // QUADRATIC_MEAN
     default:
       throw std::invalid_argument("Unsupported Probabilities type");
   }

@@ -3,11 +3,32 @@
 
 #include "probability/Probabilities.h"
 
+enum class OldDynpSymmetricType
+{
+  ARITHMETIC_MEAN,
+  GEOMETRIC_MEAN,
+  HARMONIC_MEAN,
+  QUADRATIC_MEAN
+};
+
 class OldDynpSymmetric : public Probabilities
 {
+ private:
+  OldDynpSymmetricType meanType = OldDynpSymmetricType::GEOMETRIC_MEAN;
+
  public:
-  OldDynpSymmetric(int m, int n, int s, int t) : Probabilities(m, n, s, t) {}
-  OldDynpSymmetric(const Graph& graph, int s, int t) : Probabilities(graph, s, t) {}
+  OldDynpSymmetric(int m, int n, int s, int t,
+                   OldDynpSymmetricType type = OldDynpSymmetricType::GEOMETRIC_MEAN)
+      : Probabilities(m, n, s, t)
+  {
+    meanType = type;
+  }
+  OldDynpSymmetric(const Graph& graph, int s, int t,
+                   OldDynpSymmetricType type = OldDynpSymmetricType::GEOMETRIC_MEAN)
+      : Probabilities(graph, s, t)
+  {
+    meanType = type;
+  }
   double get_p(int v_m, int v_n) override
   {
     double mult_m;
@@ -31,7 +52,21 @@ class OldDynpSymmetric : public Probabilities
                   (static_cast<double>(degree_m_[v_m]) / (expected_m_ + 0.5)) * expected_percent_),
         0.8);
 
-    return sqrt(a) * sqrt(b);
+    switch (meanType)
+    {
+      case OldDynpSymmetricType::ARITHMETIC_MEAN:
+        return (a + b) / 2.0;
+
+      case OldDynpSymmetricType::GEOMETRIC_MEAN:
+        return std::sqrt(a * b);
+
+      case OldDynpSymmetricType::HARMONIC_MEAN:
+        return 2.0 / (1.0 / a + 1.0 / b);
+
+      case OldDynpSymmetricType::QUADRATIC_MEAN:
+        return std::sqrt((a * a + b * b) / 2.0);
+    }
+    return std::sqrt(a * b);  // default GEOMETRIC_MEAN
   }
 };
 
