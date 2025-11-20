@@ -1,8 +1,12 @@
-copy ..\output\K22\graphs\* ..\experiments\test1output\K22\graphs\
-copy ..\output\K22\graphs\* ..\experiments\test2output\K22\graphs\
-copy ..\output\K22\graphs\* ..\experiments\test3output\K22\graphs\
-copy ..\output\K22\graphs\* ..\experiments\test4output\K22\graphs\
+copy ..\output\K45\graphs\* ..\experiments\test1output\K45\graphs\
+copy ..\output\K45\graphs\* ..\experiments\test2output\K45\graphs\
+copy ..\output\K45\graphs\* ..\experiments\test3output\K45\graphs\
+copy ..\output\K45\graphs\* ..\experiments\test4output\K45\graphs\
 
+ ..\scripts\util\shuffle_graphs.exe ..\experiments\test1output\K45\graphs
+ ..\scripts\util\shuffle_graphs.exe ..\experiments\test2output\K45\graphs
+ ..\scripts\util\shuffle_graphs.exe ..\experiments\test3output\K45\graphs
+ ..\scripts\util\shuffle_graphs.exe ..\experiments\test4output\K45\graphs
 
 start "test1" cmd /k "cd .. && .\bin\program.exe test1 && .\scripts\util\compare experiments\test1output\K45\results\finalresults0.txt experiments\current_results.txt"
 start "test2" cmd /k "cd .. && .\bin\program.exe test2 && .\scripts\util\compare experiments\test2output\K45\results\finalresults0.txt experiments\current_results.txt

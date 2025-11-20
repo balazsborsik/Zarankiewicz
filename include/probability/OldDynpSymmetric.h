@@ -5,9 +5,9 @@
 
 enum class OldDynpSymmetricType
 {
-  ARITHMETIC_MEAN,
-  GEOMETRIC_MEAN,
   HARMONIC_MEAN,
+  GEOMETRIC_MEAN,
+  ARITHMETIC_MEAN,
   QUADRATIC_MEAN
 };
 
@@ -54,14 +54,14 @@ class OldDynpSymmetric : public Probabilities
 
     switch (meanType)
     {
-      case OldDynpSymmetricType::ARITHMETIC_MEAN:
-        return (a + b) / 2.0;
+      case OldDynpSymmetricType::HARMONIC_MEAN:
+        return 2.0 / (1.0 / a + 1.0 / b);
 
       case OldDynpSymmetricType::GEOMETRIC_MEAN:
         return std::sqrt(a * b);
 
-      case OldDynpSymmetricType::HARMONIC_MEAN:
-        return 2.0 / (1.0 / a + 1.0 / b);
+      case OldDynpSymmetricType::ARITHMETIC_MEAN:
+        return (a + b) / 2.0;
 
       case OldDynpSymmetricType::QUADRATIC_MEAN:
         return std::sqrt((a * a + b * b) / 2.0);

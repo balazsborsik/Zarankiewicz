@@ -83,13 +83,13 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
       return std::make_unique<OldDynpSymmetric>(m, n, s, t);  // GEOMETRIC_MEAN
     case 20:
       return std::make_unique<OldDynpSymmetric>(
-          m, n, s, t, OldDynpSymmetricType::ARITHMETIC_MEAN);  // ARITHMETIC_MEAN
+          m, n, s, t, OldDynpSymmetricType::HARMONIC_MEAN);  // HARMONIC_MEAN
     case 21:
       return std::make_unique<OldDynpSymmetric>(
           m, n, s, t, OldDynpSymmetricType::GEOMETRIC_MEAN);  // GEOMETRIC_MEAN
     case 22:
       return std::make_unique<OldDynpSymmetric>(
-          m, n, s, t, OldDynpSymmetricType::HARMONIC_MEAN);  // HARMONIC_MEAN
+          m, n, s, t, OldDynpSymmetricType::ARITHMETIC_MEAN);  // ARITHMETIC_MEAN
     case 23:
       return std::make_unique<OldDynpSymmetric>(
           m, n, s, t, OldDynpSymmetricType::QUADRATIC_MEAN);  // QUADRATIC_MEAN
