@@ -2,13 +2,18 @@
 setlocal enabledelayedexpansion
 
 set "S=4"
-set "T=5"
+set "T=6"
 
 set "test1_KST=K%S%%T%"
 set "test2_KST=K%S%%T%"
 
 set "test1_DIR=..\experiments\nodetest1output\%test1_KST%\graphs"
 set "test2_DIR=..\experiments\nodetest2output\%test2_KST%\graphs"
+
+set "destination_DIR=%~dp0..\output"
+
+call copy_no_replace.bat "%destination_DIR%\%test1_KST%\graphs" "%test1_DIR%"
+call copy_no_replace.bat "%destination_DIR%\%test2_KST%\graphs" "%test2_DIR%"
 
 set "TEST1_RESULTS=..\experiments\test1_results.txt"
 set "TEST2_RESULTS=..\experiments\test2_results.txt"

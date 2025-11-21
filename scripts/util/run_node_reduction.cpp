@@ -89,7 +89,9 @@ struct GraphRowColumn
       }
     }
   }
-  const int getPotential() const { return graph.edges - (rowSum[minRowIdx] + colSum[minColIdx]); }
+  const int getMinRowSum() const { return rowSum[minRowIdx]; }
+
+  const int getMinColSum() const { return colSum[minColIdx]; }
 
   GraphRowColumn(int m, int n) : graph(m, n) {}
 };
@@ -97,7 +99,8 @@ inline bool operator<(const GraphRowColumn& lhs, const GraphRowColumn& rhs)
 {
   if (lhs.graph.edges == rhs.graph.edges)
   {
-    return lhs.getPotential() < rhs.getPotential();
+    return lhs.getMinRowSum() == rhs.getMinRowSum() ? lhs.getMinColSum() < rhs.getMinColSum()
+                                                    : lhs.getMinRowSum() < rhs.getMinRowSum();
   }
   return lhs.graph.edges < rhs.graph.edges;
 }
