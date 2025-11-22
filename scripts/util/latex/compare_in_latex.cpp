@@ -8,6 +8,8 @@
 // g++ compare_in_latex.cpp -o compare_in_latex
 // Usage: compare_in_latex <matrixA.txt> <matrixB.txt> [subsize] [topindex]
 
+// compare_in_latex ../../aftertrivialremovals/K35_current_results.txt
+// ../../beforetrivialremovals/K35_current_results.txt diff 15 30
 using namespace std;
 using Matrix = vector<vector<int>>;
 
@@ -67,7 +69,8 @@ string colorForDiff(int diff, bool better)
   return (better ? "green!" : "red!") + to_string(intensity);
 }
 
-void printInLatex(const Matrix& A, const Matrix& B, int subsize, int startIdx)
+void printInLatex(const Matrix& A, const Matrix& B, int subsize, int startIdx,
+                  bool printDiff = false)
 {
   cout <<
       R"(\begin{center}
@@ -98,14 +101,21 @@ void printInLatex(const Matrix& A, const Matrix& B, int subsize, int startIdx)
 
       if (a == b)
       {
-        cout << " & " << a;
+        if (!printDiff)
+          cout << " & " << a;
+        else
+          cout << " & ";
         continue;
       }
 
       int diff = abs(a - b);
       bool better = (a > b);
-      string color = colorForDiff(diff, better);
-      cout << " & \\textcolor{" << color << "}{" << a << "}";
+      string color =
+          (!printDiff) ? colorForDiff(diff, better) : (better ? "green!69!black" : "red!69!black");
+      if (!printDiff)
+        cout << " & \\textcolor{" << color << "}{" << a << "}";
+      else
+        cout << " & \\textcolor{" << color << "}{" << diff << "}";
     }
     cout << " \\\\\n";
   }
@@ -115,7 +125,7 @@ void printInLatex(const Matrix& A, const Matrix& B, int subsize, int startIdx)
 
 int main(int argc, char* argv[])
 {
-  if (argc < 3 || argc > 5)
+  if (argc < 3 || argc > 6)
   {
     cerr << "Usage: " << argv[0] << " <matrixA.txt> <matrixB.txt> [subsize] [top_index]\n";
     cerr << "  subsize defaults to 40\n";
@@ -128,13 +138,14 @@ int main(int argc, char* argv[])
 
   int subsize = 40;
   bool fromTop = false;
+  bool onlyDiff = false;
   int topIndex = 0;
-
-  if (argc >= 4) subsize = stoi(argv[3]);
-  if (argc == 5)
+  if (argc >= 4 && string(argv[3]) == string("diff")) onlyDiff = true;
+  if (argc >= 5) subsize = stoi(argv[4]);
+  if (argc == 6)
   {
     fromTop = true;
-    topIndex = stoi(argv[4]);
+    topIndex = stoi(argv[5]);
     if (topIndex > 40) topIndex = 40;  // clamp
   }
 
@@ -153,6 +164,6 @@ int main(int argc, char* argv[])
   A = extractSubmatrix(A, subsize, fromTop, topIndex);
   B = extractSubmatrix(B, subsize, fromTop, topIndex);
 
-  printInLatex(A, B, subsize, startIndex);
+  printInLatex(A, B, subsize, startIndex, onlyDiff);
   return 0;
 }
