@@ -1,1 +1,1 @@
-cd .. && .\scripts\util\get_results output\K55\graphs experiments\current_results.txt
+cd .. && .\scripts\util\get_results output\K56\graphs experiments\current_results.txt
