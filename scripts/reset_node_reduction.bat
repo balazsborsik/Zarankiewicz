@@ -1,5 +1,5 @@
 @echo off
-set "test1_KST=K46"
+set "test1_KST=K55"
 set "test2_KST=%test1_KST%"
 
 set "test1_DIR=%~dp0..\experiments\nodetest1output\%test1_KST%"
