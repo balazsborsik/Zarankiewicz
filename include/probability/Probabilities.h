@@ -18,9 +18,9 @@ class Probabilities
  public:
   virtual ~Probabilities() = default;
   Probabilities(int m, int n, int s, int t);
-  Probabilities(const Graph &graph, int s, int t);
+  Probabilities(const Graph& graph, int s, int t);
   virtual void reInitialize(int m, int n, int s, int t);
-  virtual void reInitialize(const Graph &graph, int s, int t);
+  virtual void reInitialize(const Graph& graph, int s, int t);
   virtual void clear();
   virtual void delete_edge(int v_m, int v_n);
   virtual void add_edge(int v_m, int v_n);
@@ -28,7 +28,7 @@ class Probabilities
 
  private:
   void init(int m, int n, int s, int t);
-  void initDegreesFromGraph(const Graph &graph);
+  void initDegreesFromGraph(const Graph& graph);
 };
 
 #endif  // PROBABILITIES_H
