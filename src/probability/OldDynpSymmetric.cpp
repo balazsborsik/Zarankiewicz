@@ -8,7 +8,7 @@ double OldDynpSymmetric::get_multiplier_m(int v_m) const
   {
     return (degree_m_[v_m] >= (expected_m_ + 1.0)) ? 0.9 : 0.5;
   }
-  return 6.7 - 5.6 * (static_cast<double>(degree_n_[v_m]) / (expected_m_ + 0.5));
+  return 6.7 - 5.6 * (static_cast<double>(degree_m_[v_m]) / (expected_m_ + 0.5));
 }
 
 double OldDynpSymmetric::get_multiplier_n(int v_n) const
