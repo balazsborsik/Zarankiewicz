@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 set "S=2"
-set "T=4"
+set "T=3"
 
 set "test1_KST=K%S%%T%"
 set "test2_KST=K%S%%T%"
