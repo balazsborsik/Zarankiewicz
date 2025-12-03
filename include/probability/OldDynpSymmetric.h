@@ -16,6 +16,14 @@ class OldDynpSymmetric : public Probabilities
  private:
   OldDynpSymmetricType meanType = OldDynpSymmetricType::GEOMETRIC_MEAN;
 
+  double get_multiplier_m(int v_m) const;
+  double get_multiplier_n(int v_n) const;
+
+  double compute_m_term(int v_m, int v_n) const;
+  double compute_n_term(int v_m, int v_n) const;
+
+  double apply_mean(double a, double b) const;
+
  public:
   OldDynpSymmetric(int m, int n, int s, int t,
                    OldDynpSymmetricType type = OldDynpSymmetricType::GEOMETRIC_MEAN)
@@ -27,15 +35,6 @@ class OldDynpSymmetric : public Probabilities
       : Probabilities(graph, s, t), meanType(type)
   {
   }
-
-  double get_multiplier_m(int v_m) const;
-  double get_multiplier_n(int v_n) const;
-
-  double compute_m_term(int v_m, int v_n) const;
-  double compute_n_term(int v_m, int v_n) const;
-
-  double apply_mean(double a, double b) const;
-
   double get_p(int v_m, int v_n) override;
 };
 
