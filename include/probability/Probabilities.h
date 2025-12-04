@@ -9,6 +9,7 @@ class Probabilities
  protected:
   int m_, n_;
   int s_, t_;
+  int edge_count_;
   int degree_m_[Constants::MAX_SIZE] = {};
   int degree_n_[Constants::MAX_SIZE] = {};
   double expected_m_;
