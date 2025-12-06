@@ -1,7 +1,7 @@
-set "test1_KST=K46"
-set "test2_KST=K55"
-set "test3_KST=K56"
-set "test4_KST=K66"
+set "test1_KST=K22"
+set "test2_KST=K22"
+set "test3_KST=K22"
+set "test4_KST=K22"
 
 copy ..\output\%test1_KST%\graphs\* ..\experiments\test1output\%test1_KST%\graphs\
 copy ..\output\%test2_KST%\graphs\* ..\experiments\test2output\%test2_KST%\graphs\

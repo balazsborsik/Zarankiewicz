@@ -12,6 +12,7 @@
 #include "io/FileManager.h"
 #include "logger/Logger.h"
 #include "probability/Dynp.h"
+#include "probability/NewDynp.h"
 #include "probability/OldDynp.h"
 #include "probability/OldDynpSymmetric.h"
 #include "structure/KstStore.h"
@@ -93,6 +94,8 @@ std::unique_ptr<Probabilities> Runner::makeProb(int type, int m, int n, int s, i
     case 23:
       return std::make_unique<OldDynpSymmetric>(
           m, n, s, t, OldDynpSymmetricType::QUADRATIC_MEAN);  // QUADRATIC_MEAN
+    case 3:
+      return std::make_unique<NewDynp>(m, n, s, t);
     default:
       throw std::invalid_argument("Unsupported Probabilities type");
   }
@@ -199,15 +202,20 @@ void Runner::runIteration(Graph& adj, int insideIterations, int m, int n)
     {
       best = adj;
     }*/
+    /*double locsum = 0;
+    for (int u = 0; u < m; ++u)
+      for (int v = 0; v < n; ++v)
+        if (adj[u][v] == 0) locsum += prob_->get_p(u, v);
+    std::cout << "Predicted edges: " << Util::upperBound(m, n, s_, t_)
+              << " Current edges: " << adj.edges << " Locsum: " << locsum << std::endl;*/
+
     for (int u = 0; u < m; ++u)
     {
       for (int v = 0; v < n; ++v)
       {
         if (adj[u][v] == 0)
         {
-          double p = prob_->get_p(u, v) *
-                     getConfigInstance().probabilityMultiplier;  // TODO: switch it to config if it
-                                                                 // can read double values
+          double p = prob_->get_p(u, v) * getConfigInstance().probabilityMultiplier;
           double rand_val = Util::randDouble();
           if (rand_val < p)
           {
