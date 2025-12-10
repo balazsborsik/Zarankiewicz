@@ -3,5 +3,7 @@ bin/
 **/*.exe
 scripts/toinvert/**
 scripts/tocompare/**
+scripts/util/latex/tables/**
+scripts/util/latex/readme_tables/**
 experiments/**
 !experiments/*.conf
