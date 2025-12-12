@@ -113,9 +113,60 @@ std::string generate_latex_footer(int s, int t)
   return ss.str();
 }
 
-void print_in_latexformat(std::string output, const std::vector<std::vector<int>>& res, int max,
-                          int s, int t)
+std::vector<std::vector<int>> getBestKnownResults(int s, int t)
 {
+  std::vector<std::vector<int>> bestKnown;
+  std::string path =
+      "./best_known_results/K" + std::to_string(s) + std::to_string(t) + "_comparison_results.txt";
+  bestKnown = readMatrix(path);
+  return bestKnown;
+}
+
+void print_in_latexformat(std::string output, const std::vector<std::vector<int>>& res, int max,
+                          int s, int t, bool enable_comparison)
+{
+  std::vector<std::vector<std::string>> results;
+  if (enable_comparison)
+    /*{ TODO: check and rewrite
+      std::vector<std::vector<int>> best_known = getBestKnownResults(s, t);
+      results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
+      for (size_t i = 0; i < res.size(); i++)
+      {
+        for (size_t j = 0; j < res[i].size(); j++)
+        {
+          if (res[i][j] > 0 && best_known[i][j] > 0)
+          {
+            if (res[i][j] < best_known[i][j])
+            {
+              results[i][j] = "\\textbf{" + std::to_string(res[i][j]) + "}";
+            }
+            else if (res[i][j] == best_known[i][j])
+            {
+              results[i][j] = std::to_string(res[i][j]);
+            }
+            else
+            {
+              results[i][j] = "\\textit{" + std::to_string(res[i][j]) + "}";
+            }
+          }
+          else
+          {
+            results[i][j] = std::to_string(res[i][j]);
+          }
+        }
+      }
+    }*/
+    else
+    {
+      results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
+      for (size_t i = 0; i < res.size(); i++)
+      {
+        for (size_t j = 0; j < res[i].size(); j++)
+        {
+          results[i][j] = std::to_string(res[i][j]);
+        }
+      }
+    }
   std::ofstream outfile(output);
   std::string start = generate_latex_header(t, max);
   std::string end = generate_latex_footer(s, t);
@@ -125,9 +176,10 @@ void print_in_latexformat(std::string output, const std::vector<std::vector<int>
     outfile << i;
     for (int j = t; j <= max; j++)
     {
-      int val = res[i - 2][j - 2];
+      int val = res[j - 2][i - 2];
+      std::string value_to_print = results[i - 2][j - 2];
       if (val)
-        outfile << " & " << val;
+        outfile << " & " << value_to_print;
       else
         outfile << " &  ";
     }
@@ -143,6 +195,7 @@ int main(int argc, char* argv[])
   {
     for (int t = s; t <= 6; t++)
     {
+      bool enable_comparison = true;
       std::string pathOfResults =
           "./../../../output/K" + std::to_string(s) + std::to_string(t) + "/current_results.txt";
       std::vector<std::vector<int>> res = readMatrix(pathOfResults);
@@ -151,7 +204,7 @@ int main(int argc, char* argv[])
           "./tables/K" + std::to_string(s) + std::to_string(t) + "_results_latex.tex";
       std::string readme =
           "./readme_tables/K" + std::to_string(s) + std::to_string(t) + "_results_readme.txt";
-      print_in_latexformat(latex, res, maxSize, s, t);
+      print_in_latexformat(latex, res, maxSize, s, t, enable_comparison);
       print_in_readme_format(readme, res, maxSize, s, t);
     }
   }
