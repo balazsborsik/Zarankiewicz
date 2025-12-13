@@ -5,6 +5,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include "structure/DynamicKst.h"
+#include "structure/GenericKstStore.h"
 #include "structure/K22Store.h"
 #include "structure/K23Store.h"
 #include "structure/K24Store.h"
@@ -151,6 +153,6 @@ std::unique_ptr<KstStore> Util::createKstStore(int s, int t)
       }
       break;
   }
-
-  throw std::invalid_argument("Unsupported K_{s,t} store type");
+  return std::make_unique<GenericKstStore>(s, t);
+  // throw std::invalid_argument("Unsupported K_{s,t} store type");
 }
