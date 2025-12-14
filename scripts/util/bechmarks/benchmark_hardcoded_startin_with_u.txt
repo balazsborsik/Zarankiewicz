@@ -1,0 +1,4 @@
+K22 = 67.5092 milliseconds
+K33 = 364.996 milliseconds
+K44 = 3411.59 milliseconds
+K55 = 23543.3 milliseconds
