@@ -14,8 +14,10 @@
 
 using namespace std;
 
-// g++ benchmark.cpp ../../src/core/Graph.cpp ../../src/util/Util.cpp ../../src/structure/*.cpp
-// -I../../include -o benchmark
+// g++ -O3 benchmark.cpp ../../../src/core/Graph.cpp ../../../src/util/Util.cpp
+// ../../../src/structure/*.cpp ../../../src/structure/legacy/*.cpp -I../../../include -o benchmark
+
+// benchmark ./../../../output
 
 struct CachedGraph
 {
@@ -161,8 +163,8 @@ void runBenchmarkStore(int s, int t, std::ofstream& outfile)
         if (edgesToAdd[&entry - &graphCache[0]].adj[i][j])
         {
           entry.graph.adj[i][j] = 0;
-          kstStore->storeKst(entry.graph, i, j);
-
+          // kstStore->storeKst(entry.graph, i, j);
+          kstStore->createsKst(entry.graph, i, j);
           totalChecks++;
           entry.graph.adj[i][j] = 1;
         }
@@ -224,10 +226,42 @@ int main(int argc, char* argv[])
   }
 
   string dir = argv[1];
-  std::string outputFilename = "benchmark_ic.txt";
+  std::string outputFilename = "newhardcoded/benchmark_creates_with_exit_10_percent.txt";
 
   std::ofstream outfile(outputFilename);
   if (!outfile.is_open())
+  {
+    cerr << "Error: Could not open output file " << outputFilename << endl;
+    return 1;
+  }
+
+  cout << "Starting Benchmarks..." << endl;
+
+  for (int i = 2; i <= 6; i++)
+  {
+    for (int j = i; j <= 6; j++)
+    {
+      // if (j != i || i == 6) continue;
+      kstStore = Util::createKstStore(i + 0, j + 0);
+
+      cacheAllGraphs(dir + "/K" + to_string(i) + to_string(j) + "/graphs");
+      if (graphCache.empty())
+      {
+        cerr << "No valid graphs found in directory." << endl;
+        return 1;
+      }
+      addRandomNoise(0.1);
+      runBenchmarkStore(i, j, outfile);
+    }
+  }
+
+  outfile.close();
+  cout << "Results saved to " << outputFilename << endl;
+
+  outputFilename = "generic/benchmark_creates_with_exit_10_percent.txt";
+
+  std::ofstream outfile2(outputFilename);
+  if (!outfile2.is_open())
   {
     cerr << "Error: Could not open output file " << outputFilename << endl;
     return 1;
@@ -248,12 +282,44 @@ int main(int argc, char* argv[])
         cerr << "No valid graphs found in directory." << endl;
         return 1;
       }
-      addRandomNoise(0.01);
-      runBenchmarkStore(i, j, outfile);
+      addRandomNoise(0.1);
+      runBenchmarkStore(i, j, outfile2);
     }
   }
 
-  outfile.close();
+  outfile2.close();
+  cout << "Results saved to " << outputFilename << endl;
+
+  outputFilename = "oldhardcoded/benchmark_creates_with_exit_10_percent.txt";
+
+  std::ofstream outfile3(outputFilename);
+  if (!outfile3.is_open())
+  {
+    cerr << "Error: Could not open output file " << outputFilename << endl;
+    return 1;
+  }
+
+  cout << "Starting Benchmarks..." << endl;
+
+  for (int i = 2; i <= 6; i++)
+  {
+    for (int j = i; j <= 6; j++)
+    {
+      // if (j != i || i == 6) continue;
+      kstStore = Util::createKstStore(i + 20, j + 20);
+
+      cacheAllGraphs(dir + "/K" + to_string(i) + to_string(j) + "/graphs");
+      if (graphCache.empty())
+      {
+        cerr << "No valid graphs found in directory." << endl;
+        return 1;
+      }
+      addRandomNoise(0.1);
+      runBenchmarkStore(i, j, outfile3);
+    }
+  }
+
+  outfile3.close();
   cout << "Results saved to " << outputFilename << endl;
 
   return 0;

@@ -3,18 +3,39 @@
 
 #include <vector>
 
+#include "config/Constants.h"
 #include "core/Graph.h"
-#include "structure/DynamicKst.h"
+#include "structure/Kst.h"
 #include "structure/KstStore.h"
 
 class Probabilities;
+
+template <typename T, int N>
+struct Fixvector
+{
+  T arr[N];
+  int size_;
+
+  Fixvector() : size_(0) {}
+  void push_back(T val) { arr[size_++] = val; }
+  void pop_back() { --size_; }
+  int size() const { return size_; }
+  T* begin() { return arr; }
+  const T* begin() const { return arr; }
+
+  T* end() { return arr + size_; }
+  const T* end() const { return arr + size_; }
+
+  T& operator[](int index) { return arr[index]; }
+  const T& operator[](int index) const { return arr[index]; }
+};
 
 class GenericKstStore : public KstStore
 {
  private:
   int s_;
   int t_;
-  std::vector<DynamicKst> circles_;
+  std::vector<Kst<Constants::MAX_S, Constants::MAX_T>> circles_;
   Graph edges_in_circles_;
 
  public:
@@ -32,16 +53,17 @@ class GenericKstStore : public KstStore
   bool reflipCircle(Graph& adj, Probabilities& prob) override;
 
  private:
-  bool checkRecurseU(const Graph& adj, const std::vector<int>& candidates, int start_idx,
-                     std::vector<int>& current_u, int fixed_v) const;
+  bool checkRecurseU(const Graph& adj, const Fixvector<int, Constants::MAX_SIZE>& candidates,
+                     int start_idx, Fixvector<int, Constants::MAX_S>& current_u, int fixed_v) const;
 
-  void storeRecurseU(const Graph& adj, const std::vector<int>& candidates, int start_idx,
-                     std::vector<int>& current_u, int fixed_v);
+  void storeRecurseU(const Graph& adj, const Fixvector<int, Constants::MAX_SIZE>& candidates,
+                     int start_idx, Fixvector<int, Constants::MAX_S>& current_u, int fixed_v);
 
-  void storeRecurseV(const std::vector<int>& candidates, int start_idx,
-                     const std::vector<int>& final_u, std::vector<int>& current_v);
+  void storeRecurseV(const Fixvector<int, 40>& candidates, int start_idx,
+                     const Fixvector<int, Constants::MAX_S>& final_u,
+                     Fixvector<int, Constants::MAX_T>& current_v);
 
-  void decrementCounts(const DynamicKst& circle);
+  void decrementCounts(const Kst<Constants::MAX_S, Constants::MAX_T>& circle);
 };
 
 #endif  // GENERIC_KST_STORE_H

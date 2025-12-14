@@ -23,6 +23,20 @@
 #include "structure/K56Store.h"
 #include "structure/K66Store.h"
 #include "structure/KstStore.h"
+#include "structure/legacy/OldK23Store.h"
+#include "structure/legacy/OldK24Store.h"
+#include "structure/legacy/OldK25Store.h"
+#include "structure/legacy/OldK26Store.h"
+#include "structure/legacy/OldK33Store.h"
+#include "structure/legacy/OldK34Store.h"
+#include "structure/legacy/OldK35Store.h"
+#include "structure/legacy/OldK36Store.h"
+#include "structure/legacy/OldK44Store.h"
+#include "structure/legacy/OldK45Store.h"
+#include "structure/legacy/OldK46Store.h"
+#include "structure/legacy/OldK55Store.h"
+#include "structure/legacy/OldK56Store.h"
+#include "structure/legacy/OldK66Store.h"
 
 std::mt19937 Util::gen(std::random_device{}());
 
@@ -153,6 +167,71 @@ std::unique_ptr<KstStore> Util::createKstStore(int s, int t)
       }
       break;
   }
+  if (s > 20 && t > 20)
+  {
+    s -= 20;
+    t -= 20;
+    switch (s)
+    {
+      case 2:
+        switch (t)
+        {
+          case 2:
+            return std::make_unique<K22Store>();
+          case 3:
+            return std::make_unique<OldK23Store>();
+          case 4:
+            return std::make_unique<OldK24Store>();
+          case 5:
+            return std::make_unique<OldK25Store>();
+          case 6:
+            return std::make_unique<OldK26Store>();
+        }
+        break;
+      case 3:
+        switch (t)
+        {
+          case 3:
+            return std::make_unique<OldK33Store>();
+          case 4:
+            return std::make_unique<OldK34Store>();
+          case 5:
+            return std::make_unique<OldK35Store>();
+          case 6:
+            return std::make_unique<OldK36Store>();
+        }
+        break;
+      case 4:
+        switch (t)
+        {
+          case 4:
+            return std::make_unique<OldK44Store>();
+          case 5:
+            return std::make_unique<OldK45Store>();
+          case 6:
+            return std::make_unique<OldK46Store>();
+        }
+        break;
+      case 5:
+        switch (t)
+        {
+          case 5:
+            return std::make_unique<OldK55Store>();
+          case 6:
+            return std::make_unique<OldK56Store>();
+        }
+        break;
+      case 6:
+        switch (t)
+        {
+          case 6:
+            return std::make_unique<OldK66Store>();
+        }
+        break;
+    }
+  }
+  s -= 10;
+  t -= 10;
   return std::make_unique<GenericKstStore>(s, t);
   // throw std::invalid_argument("Unsupported K_{s,t} store type");
 }

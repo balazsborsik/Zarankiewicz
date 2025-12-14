@@ -2,7 +2,6 @@
 
 #include <algorithm>
 
-#include "config/Constants.h"
 #include "probability/Probabilities.h"
 
 GenericKstStore::GenericKstStore(int s, int t)
@@ -18,12 +17,10 @@ void GenericKstStore::clear()
 
 bool GenericKstStore::createsKst(const Graph& adj, int u, int v) const
 {
-  std::vector<int> current_u;
-  current_u.reserve(s_);
+  Fixvector<int, Constants::MAX_S> current_u;
   current_u.push_back(u);
 
-  std::vector<int> candidates;
-  candidates.reserve(adj.m);
+  Fixvector<int, Constants::MAX_SIZE> candidates;
   for (int i = 0; i < adj.m; ++i)
   {
     if (i != u && adj[i][v])
@@ -32,19 +29,17 @@ bool GenericKstStore::createsKst(const Graph& adj, int u, int v) const
     }
   }
 
-  if (candidates.size() < (size_t)(s_ - 1)) return false;
+  if (candidates.size() < (s_ - 1)) return false;
 
   return checkRecurseU(adj, candidates, 0, current_u, v);
 }
 
 void GenericKstStore::storeKst(const Graph& adj, int u, int v)
 {
-  std::vector<int> current_u;
-  current_u.reserve(s_);
+  Fixvector<int, Constants::MAX_S> current_u;
   current_u.push_back(u);
 
-  std::vector<int> candidates;
-  candidates.reserve(adj.m);
+  Fixvector<int, Constants::MAX_SIZE> candidates;
   for (int i = 0; i < adj.m; ++i)
   {
     if (i != u && adj[i][v])
@@ -58,23 +53,30 @@ void GenericKstStore::storeKst(const Graph& adj, int u, int v)
 
 void GenericKstStore::reevalCircles(const Graph& adj)
 {
-  circles_.erase(std::remove_if(circles_.begin(), circles_.end(),
-                                [&adj, this](const DynamicKst& circle)
-                                {
-                                  for (int u_node : circle.u_arr)
-                                  {
-                                    for (int v_node : circle.v_arr)
-                                    {
-                                      if (!adj[u_node][v_node])
-                                      {
-                                        decrementCounts(circle);
-                                        return true;
-                                      }
-                                    }
-                                  }
-                                  return false;
-                                }),
-                 circles_.end());
+  circles_.erase(
+      std::remove_if(circles_.begin(), circles_.end(),
+                     [&adj, this](const Kst<Constants::MAX_S, Constants::MAX_T>& circle)
+                     {
+                       for (int i = 0; i < s_; ++i)
+                       {
+                         for (int j = 0; j < s_; ++j)
+                         {
+                           if (!adj[circle.u_arr[i]][circle.v_arr[j]])
+                           {
+                             for (int u_idx = 0; u_idx < s_; ++u_idx)
+                             {
+                               for (int v_idx = 0; v_idx < t_; ++v_idx)
+                               {
+                                 --edges_in_circles_.adj[circle.u_arr[u_idx]][circle.v_arr[v_idx]];
+                               }
+                             }
+                             return true;
+                           }
+                         }
+                       }
+                       return false;
+                     }),
+      circles_.end());
 }
 
 bool GenericKstStore::reflipCircle(Graph& adj, Probabilities& prob)
@@ -107,8 +109,10 @@ bool GenericKstStore::reflipCircle(Graph& adj, Probabilities& prob)
   return true;
 }
 
-bool GenericKstStore::checkRecurseU(const Graph& adj, const std::vector<int>& candidates,
-                                    int start_idx, std::vector<int>& current_u, int fixed_v) const
+bool GenericKstStore::checkRecurseU(const Graph& adj,
+                                    const Fixvector<int, Constants::MAX_SIZE>& candidates,
+                                    int start_idx, Fixvector<int, Constants::MAX_S>& current_u,
+                                    int fixed_v) const
 {
   if (current_u.size() == (size_t)s_)
   {
@@ -144,13 +148,14 @@ bool GenericKstStore::checkRecurseU(const Graph& adj, const std::vector<int>& ca
   return false;
 }
 
-void GenericKstStore::storeRecurseU(const Graph& adj, const std::vector<int>& candidates,
-                                    int start_idx, std::vector<int>& current_u, int fixed_v)
+void GenericKstStore::storeRecurseU(const Graph& adj,
+                                    const Fixvector<int, Constants::MAX_SIZE>& candidates,
+                                    int start_idx, Fixvector<int, Constants::MAX_S>& current_u,
+                                    int fixed_v)
 {
   if (current_u.size() == (size_t)s_)
   {
-    std::vector<int> v_candidates;
-    v_candidates.reserve(adj.n);
+    Fixvector<int, Constants::MAX_SIZE> v_candidates;
 
     for (int j = 0; j < adj.n; ++j)
     {
@@ -169,8 +174,7 @@ void GenericKstStore::storeRecurseU(const Graph& adj, const std::vector<int>& ca
 
     if (v_candidates.size() < (size_t)(t_ - 1)) return;
 
-    std::vector<int> current_v;
-    current_v.reserve(t_);
+    Fixvector<int, 6> current_v;
     current_v.push_back(fixed_v);
     storeRecurseV(v_candidates, 0, current_u, current_v);
     return;
@@ -184,12 +188,13 @@ void GenericKstStore::storeRecurseU(const Graph& adj, const std::vector<int>& ca
   }
 }
 
-void GenericKstStore::storeRecurseV(const std::vector<int>& candidates, int start_idx,
-                                    const std::vector<int>& final_u, std::vector<int>& current_v)
+void GenericKstStore::storeRecurseV(const Fixvector<int, Constants::MAX_SIZE>& candidates,
+                                    int start_idx, const Fixvector<int, Constants::MAX_S>& final_u,
+                                    Fixvector<int, Constants::MAX_T>& current_v)
 {
   if (current_v.size() == (size_t)t_)
   {
-    circles_.emplace_back(final_u, current_v);
+    circles_.emplace_back(final_u.arr, current_v.arr);
     for (int u : final_u)
     {
       for (int v : current_v)
@@ -205,16 +210,5 @@ void GenericKstStore::storeRecurseV(const std::vector<int>& candidates, int star
     current_v.push_back(candidates[i]);
     storeRecurseV(candidates, i + 1, final_u, current_v);
     current_v.pop_back();
-  }
-}
-
-void GenericKstStore::decrementCounts(const DynamicKst& circle)
-{
-  for (int u : circle.u_arr)
-  {
-    for (int v : circle.v_arr)
-    {
-      edges_in_circles_.adj[u][v]--;
-    }
   }
 }
