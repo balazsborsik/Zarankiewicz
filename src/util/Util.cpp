@@ -39,7 +39,7 @@ int Util::upperBound(int m, int n, int s, int t)
     std::swap(m, n);
   }
   int p = s - 1;
-  if (m < s || n < t) return m * s;
+  if (m < s || n < t) return m * n;
   double previous = std::numeric_limits<double>::max();
   double result = std::numeric_limits<double>::max() - 1e307;
   while (previous > result)
