@@ -6,6 +6,8 @@
 namespace Constants
 {
 inline constexpr int MAX_SIZE = 40;
+inline constexpr int MAX_S = 6;
+inline constexpr int MAX_T = 6;
 inline constexpr int HISTOGRAM_SIZE = 5;
 inline constexpr int MAX_GRAPHS_TO_SAVE = 5;
 inline constexpr std::string_view OUTPUT_DIRECTORY = "output";
