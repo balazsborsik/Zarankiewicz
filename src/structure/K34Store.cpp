@@ -1,6 +1,9 @@
 #include "structure/K34Store.h"
 
-#include <algorithm>
+#include "config/Constants.h"
+#include "structure/KstHelper.h"
+
+K34Store::K34Store() : edges_in_circles_(Constants::MAX_SIZE, Constants::MAX_SIZE) {}
 
 void K34Store::clear()
 {
@@ -10,80 +13,94 @@ void K34Store::clear()
 
 bool K34Store::createsKst(const Graph& adj, int u, int v) const
 {
-  int m = adj.m;
-  int n = adj.n;
-  for (int u2 = 0; u2 < m; ++u2)
+  int u_cands[Constants::MAX_SIZE];
+  int u_cands_size = 0;
+
+  for (int i = 0; i < adj.m; ++i)
   {
-    if (adj[u2][v])
+    if (i != u && adj[i][v])
     {
-      for (int v2 = 0; v2 < n; ++v2)
+      u_cands[u_cands_size++] = i;
+    }
+  }
+
+  if (u_cands_size < (S_ - 1)) return false;
+
+  for (int i = 0; i < u_cands_size; ++i)
+  {
+    for (int j = i + 1; j < u_cands_size; ++j)
+    {
+      int common_v_count = 0;
+      for (int node_v = 0; node_v < adj.n; ++node_v)
       {
-        if (adj[u][v2] && adj[u2][v2])
+        if (node_v == v) continue;
+
+        if (adj[u][node_v] && adj[u_cands[i]][node_v] && adj[u_cands[j]][node_v])
         {
-          for (int u3 = u2 + 1; u3 < m; ++u3)
-          {
-            if (adj[u3][v] && adj[u3][v2])
-            {
-              for (int v3 = v2 + 1; v3 < n; ++v3)
-              {
-                if (adj[u][v3] && adj[u2][v3] && adj[u3][v3])
-                {
-                  for (int v4 = v3 + 1; v4 < n; ++v4)
-                  {
-                    if (adj[u][v4] && adj[u2][v4] && adj[u3][v4])
-                    {
-                      return true;
-                    }
-                  }
-                }
-              }
-            }
-          }
+          common_v_count++;
+          if (common_v_count >= (T_ - 1)) return true;
         }
       }
     }
   }
+
   return false;
 }
 
 void K34Store::storeKst(const Graph& adj, int u, int v)
 {
-  int m = adj.m;
-  int n = adj.n;
-  for (int u2 = 0; u2 < m; ++u2)
+  int u_cands[Constants::MAX_SIZE];
+  int u_cands_size = 0;
+
+  for (int i = 0; i < adj.m; ++i)
   {
-    if (adj[u2][v])
+    if (i != u && adj[i][v])
     {
-      for (int v2 = 0; v2 < n; ++v2)
+      u_cands[u_cands_size++] = i;
+    }
+  }
+
+  if (u_cands_size < (S_ - 1)) return;
+
+  int v_cands[Constants::MAX_SIZE];
+  int v_cands_size;
+
+  for (int i = 0; i < u_cands_size; ++i)
+  {
+    for (int j = i + 1; j < u_cands_size; ++j)
+    {
+      v_cands_size = 0;
+
+      for (int node_v = 0; node_v < adj.n; ++node_v)
       {
-        if (adj[u][v2] && adj[u2][v2])
+        if (node_v == v) continue;
+
+        if (adj[u][node_v] && adj[u_cands[i]][node_v] && adj[u_cands[j]][node_v])
         {
-          for (int u3 = u2 + 1; u3 < m; ++u3)
+          v_cands[v_cands_size++] = node_v;
+        }
+      }
+
+      if (v_cands_size < (T_ - 1)) continue;
+
+      for (int a = 0; a < v_cands_size; ++a)
+      {
+        for (int b = a + 1; b < v_cands_size; ++b)
+        {
+          for (int c = b + 1; c < v_cands_size; ++c)
           {
-            if (adj[u3][v] && adj[u3][v2])
+            Kst<S_, T_> created({u, u_cands[i], u_cands[j]},
+                                {v, v_cands[a], v_cands[b], v_cands[c]});
+
+            for (int x = 0; x < S_; ++x)
             {
-              for (int v3 = v2 + 1; v3 < n; ++v3)
+              for (int y = 0; y < T_; ++y)
               {
-                if (adj[u][v3] && adj[u2][v3] && adj[u3][v3])
-                {
-                  for (int v4 = v3 + 1; v4 < n; ++v4)
-                  {
-                    if (adj[u][v4] && adj[u2][v4] && adj[u3][v4])
-                    {
-                      Kst<3, 4> created({u, u2, u3}, {v, v2, v3, v4});
-                      for (int i = 0; i < 3; ++i)
-                      {
-                        for (int j = 0; j < 4; ++j)
-                        {
-                          edges_in_circles_.adj[created.u_arr[i]][created.v_arr[j]]++;
-                        }
-                      }
-                      circles_.push_back(created);
-                    }
-                  }
-                }
+                edges_in_circles_.adj[created.u_arr[x]][created.v_arr[y]]++;
               }
             }
+
+            circles_.push_back(created);
           }
         }
       }
@@ -93,53 +110,10 @@ void K34Store::storeKst(const Graph& adj, int u, int v)
 
 void K34Store::reevalCircles(const Graph& adj)
 {
-  circles_.erase(
-      std::remove_if(circles_.begin(), circles_.end(),
-                     [&adj, this](const Kst<3, 4>& circle)
-                     {
-                       for (int i = 0; i < 3; ++i)
-                       {
-                         for (int j = 0; j < 4; ++j)
-                         {
-                           if (!adj[circle.u_arr[i]][circle.v_arr[j]])
-                           {
-                             for (int i = 0; i < 3; ++i)
-                               for (int j = 0; j < 4; ++j)
-                                 edges_in_circles_.adj[circle.u_arr[i]][circle.v_arr[j]]--;
-                             return true;
-                           }
-                         }
-                       }
-                       return false;
-                     }),
-      circles_.end());
+  KstHelper::reevalCircles<S_, T_>(circles_, edges_in_circles_, adj);
 }
 
 bool K34Store::reflipCircle(Graph& adj, Probabilities& prob)
 {
-  if (circles_.empty()) return false;
-  std::pair<int, int> edge = std::make_pair(circles_[0].u_arr[0], circles_[0].v_arr[0]);
-  int degree = 0;
-  for (const auto& elm : circles_)
-  {
-    for (int i = 0; i < 3; ++i)
-    {
-      for (int j = 0; j < 4; ++j)
-      {
-        int u = elm.u_arr[i];
-        int v = elm.v_arr[j];
-        if (edges_in_circles_[u][v] > degree ||
-            (edges_in_circles_[u][v] == degree &&
-             (u < edge.first || (!(edge.first < u) && v < edge.second))))
-        {
-          degree = edges_in_circles_[u][v];
-          edge.first = u;
-          edge.second = v;
-        }
-      }
-    }
-  }
-  adj.removeEdge(edge.first, edge.second);
-  prob.delete_edge(edge.first, edge.second);
-  return true;
+  return KstHelper::reflipCircle<S_, T_>(circles_, edges_in_circles_, adj, prob);
 }

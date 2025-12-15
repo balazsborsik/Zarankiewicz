@@ -115,9 +115,18 @@ void Runner::run(const char* runGroup)
   }
   s_ = getConfigInstance().s;
   t_ = getConfigInstance().t;
+  kstStore_ = Util::createKstStore(s_, t_);
+  if (s_ > 10)
+  {
+    s_ -= 10;
+    t_ -= 10;
+    getConfigInstance().s = s_;
+    getConfigInstance().t = t_;
+  }
+
   prob_ = makeProb(getConfigInstance().probabilityType, getConfigInstance().min,
                    getConfigInstance().min, s_, t_);
-  kstStore_ = Util::createKstStore(s_, t_);
+
   FileManager::init(getConfigInstance().graphsDirectory());
   runFullIteration(getConfigInstance().min, getConfigInstance().max, getConfigInstance().runCount,
                    getConfigInstance().iterations, getConfigInstance().insideIterations);
