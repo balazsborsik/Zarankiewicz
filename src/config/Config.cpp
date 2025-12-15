@@ -34,14 +34,7 @@ void Config::loadConfig(const std::string& filename)
 
 std::string Config::outputDirectory() const
 {
-  int l_s = s;
-  int l_t = t;
-  if (s > 10)
-  {
-    l_s -= 10;
-    l_t -= 10;
-  }
-  return std::format("{}{}/K{}{}/", outputPrefix, Constants::OUTPUT_DIRECTORY, l_s, l_t);
+  return std::format("{}{}/K{}{}/", outputPrefix, Constants::OUTPUT_DIRECTORY, s, t);
 }
 
 std::string Config::graphsDirectory() const
