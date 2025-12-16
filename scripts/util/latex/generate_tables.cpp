@@ -88,16 +88,20 @@ std::string generate_latex_header(int min, int max)
 \setlength{\tabcolsep}{3pt}
 \scriptsize
 \resizebox{\textwidth}{!}{
-\begin{tabular}{r|*{)";
-  ss << (max - 1 - (min - 2));
-  ss << R"(}{c}} 
+\begin{tabular}{r)";
+
+  for (int i = min; i <= max; ++i)
+  {
+    if ((i - min) % 5 == 0) ss << "|";
+    ss << "c";
+  }
+  ss << R"(} 
 $m \backslash n$)";
   for (int i = min; i <= max; ++i)
   {
     ss << " & " << i;
   }
-  ss << R"( \\
-\hline)";
+  ss << R"( \\)";
   return ss.str();
 }
 
@@ -113,70 +117,136 @@ std::string generate_latex_footer(int s, int t)
   return ss.str();
 }
 
-std::vector<std::vector<int>> getBestKnownResults(int s, int t)
+bool isThereValueToCompare(int s, int t)
+{
+  std::string path =
+      "./best_known_results/K" + std::to_string(s) + std::to_string(t) + "/merged_results.txt";
+  std::ifstream file(path);
+  return file.good();
+}
+
+bool isThereFixValueToCompare(int s, int t)
+{
+  std::string path =
+      "./best_known_results/K" + std::to_string(s) + std::to_string(t) + "/merged_fix_results.txt";
+  std::ifstream file(path);
+  return file.good();
+}
+
+std::vector<std::vector<int>> getBestUpperBounds(int s, int t)
 {
   std::vector<std::vector<int>> bestKnown;
   std::string path =
-      "./best_known_results/K" + std::to_string(s) + std::to_string(t) + "_comparison_results.txt";
+      "./best_known_results/K" + std::to_string(s) + std::to_string(t) + "/merged_results.txt";
   bestKnown = readMatrix(path);
   return bestKnown;
+}
+
+std::vector<std::vector<int>> getBestFixValues(int s, int t)
+{
+  std::vector<std::vector<int>> bestKnown;
+  std::string path =
+      "./best_known_results/K" + std::to_string(s) + std::to_string(t) + "/merged_fix_results.txt";
+  bestKnown = readMatrix(path);
+  return bestKnown;
+}
+
+std::string ismert_es_beallitjuk(int value)
+{
+  return "\\textbf{" + std::to_string(value) + "}";
+}
+
+std::string ismert_es_nem_allitjuk_be(int value)
+{
+  return std::to_string(value);
+}
+
+std::string nem_ismert_es_beallitjuk(int value)
+{
+  return "\\textit{\\textbf{" + std::to_string(value) + "}}";
+}
+
+std::string nem_ismert_es_nem_allitjuk_be(int value)
+{
+  return "\\textit{" + std::to_string(value) + "}";
+}
+
+std::string hiba_megjavitjuk(int value)
+{
+  return "\\underline{\\textbf{" + std::to_string(value) + "}}";
 }
 
 void print_in_latexformat(std::string output, const std::vector<std::vector<int>>& res, int max,
                           int s, int t, bool enable_comparison)
 {
   std::vector<std::vector<std::string>> results;
-  if (enable_comparison)
-    /*{ TODO: check and rewrite
-      std::vector<std::vector<int>> best_known = getBestKnownResults(s, t);
-      results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
-      for (size_t i = 0; i < res.size(); i++)
+  if (enable_comparison && isThereValueToCompare(s, t))
+  {
+    std::vector<std::vector<int>> upper_bounds = getBestUpperBounds(s, t);
+    std::vector<std::vector<int>> fix_known;
+    bool is_fixValue_there = isThereFixValueToCompare(s, t);
+    if (is_fixValue_there) fix_known = getBestFixValues(s, t);
+    results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
+    for (size_t i = 0; i < res.size(); i++)
+    {
+      for (size_t j = 0; j < res[i].size(); j++)
       {
-        for (size_t j = 0; j < res[i].size(); j++)
+        if (res[i][j] > 0)
         {
-          if (res[i][j] > 0 && best_known[i][j] > 0)
+          if (is_fixValue_there && fix_known[i][j] > 0)
           {
-            if (res[i][j] < best_known[i][j])
+            if (res[i][j] >= fix_known[i][j])
             {
-              results[i][j] = "\\textbf{" + std::to_string(res[i][j]) + "}";
-            }
-            else if (res[i][j] == best_known[i][j])
-            {
-              results[i][j] = std::to_string(res[i][j]);
+              if (res[i][j] > fix_known[i][j])
+                results[i][j] = hiba_megjavitjuk(res[i][j]);
+              else
+                results[i][j] = ismert_es_beallitjuk(res[i][j]);
             }
             else
             {
-              results[i][j] = "\\textit{" + std::to_string(res[i][j]) + "}";
+              results[i][j] = ismert_es_nem_allitjuk_be(res[i][j]);
             }
           }
           else
           {
-            results[i][j] = std::to_string(res[i][j]);
+            if (res[i][j] >= upper_bounds[i][j])
+            {
+              if (res[i][j] > upper_bounds[i][j])
+                results[i][j] = hiba_megjavitjuk(res[i][j]);
+              else
+                results[i][j] = nem_ismert_es_beallitjuk(res[i][j]);
+            }
+            else
+            {
+              results[i][j] = nem_ismert_es_nem_allitjuk_be(res[i][j]);
+            }
           }
         }
       }
-    }*/
-    else
+    }
+  }
+  else
+  {
+    results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
+    for (size_t i = 0; i < res.size(); i++)
     {
-      results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
-      for (size_t i = 0; i < res.size(); i++)
+      for (size_t j = 0; j < res[i].size(); j++)
       {
-        for (size_t j = 0; j < res[i].size(); j++)
-        {
-          results[i][j] = std::to_string(res[i][j]);
-        }
+        results[i][j] = std::to_string(res[i][j]);
       }
     }
+  }
   std::ofstream outfile(output);
   std::string start = generate_latex_header(t, max);
   std::string end = generate_latex_footer(s, t);
   outfile << start << std::endl;
   for (int i = s; i <= max; i++)
   {
+    if ((i - s) % 5 == 0) outfile << "\\hline\n";
     outfile << i;
     for (int j = t; j <= max; j++)
     {
-      int val = res[j - 2][i - 2];
+      int val = res[i - 2][j - 2];
       std::string value_to_print = results[i - 2][j - 2];
       if (val)
         outfile << " & " << value_to_print;
@@ -201,7 +271,7 @@ int main(int argc, char* argv[])
       std::vector<std::vector<int>> res = readMatrix(pathOfResults);
       int maxSize = (s == 2 && t <= 3) ? 40 : 30;
       std::string latex =
-          "./tables/K" + std::to_string(s) + std::to_string(t) + "_results_latex.tex";
+          "./generated_tables/K" + std::to_string(s) + std::to_string(t) + "_results_latex.tex";
       std::string readme =
           "./readme_tables/K" + std::to_string(s) + std::to_string(t) + "_results_readme.txt";
       print_in_latexformat(latex, res, maxSize, s, t, enable_comparison);

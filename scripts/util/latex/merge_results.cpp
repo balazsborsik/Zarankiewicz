@@ -248,18 +248,21 @@ void mergeFiles(string targetDir, int s, int t)
           }
         }
 
+        if (valueFound && minVal > Roman(i + 2, j + 2, s, t))
+        {
+          throw runtime_error("Worse upper_bound founsd at [" + to_string(i) + "][" + to_string(j) +
+                              "] than Romans. Result value (" + to_string(minVal) +
+                              ") is more than Romans value (" +
+                              to_string(Roman(i + 2, j + 2, s, t)) + ").");
+        }
+
         // If we found any non-zero values, use the minimum. Otherwise Roman.
         int finalResultValue = valueFound ? minVal : Roman(i + 2, j + 2, s, t);
+
         mergedResults[i][j] = finalResultValue;
 
-        // 4. Validation against Merged Fix
-        // "if the value is non 0 in merged_fix_results, and if the value from results is less...
-        // throw exception"
         int fixVal = mergedFix[i][j];
 
-        // We only check validation if both have data.
-        // If result is 0 (no data), we generally don't compare against fix unless specified
-        // otherwise. Assuming standard logic: we validate only actual calculated values.
         if (fixVal != 0)
         {
           if (finalResultValue != fixVal)
