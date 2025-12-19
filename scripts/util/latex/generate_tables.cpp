@@ -70,7 +70,7 @@ void print_in_readme_format(std::string output, const std::vector<std::vector<in
       int val = res[j - 2][i - 2];
       if (val)
         // outfile<<" | ["<<val<<"](results/output/"<<'Z'<<i+2<<'_'<<j+2<<"_2_2_"<<val<<".txt)";
-        outfile << " | [" << val << "](output/K" << s << t << "/graphs/Z" << i << '_' << j
+        outfile << " | [" << val << "](https://github.com/balazsborsik/Zarankiewicz/blob/main/output/K" << s << t << "/graphs/Z" << i << '_' << j
                 << "_2_2_" << val << ".txt)";
       else
         outfile << " |  ";
