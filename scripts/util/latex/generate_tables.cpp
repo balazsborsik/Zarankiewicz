@@ -154,32 +154,35 @@ std::vector<std::vector<int>> getBestFixValues(int s, int t)
 std::string ismert_es_beallitjuk(int value)
 {
   return "\\textbf{" + std::to_string(value) + "}";
+  // return "\\textbf{" + std::to_string(value) + "}";
 }
 
 std::string ismert_es_nem_allitjuk_be(int value)
 {
-  return std::to_string(value);
+  return "\\underline{" + std::to_string(value) + "}";
 }
 
 std::string nem_ismert_es_beallitjuk(int value)
 {
-  return "\\textit{\\textbf{" + std::to_string(value) + "}}";
+  return "\\fixedbox{\\textbf{" + std::to_string(value) + "}}";
 }
 
 std::string nem_ismert_es_nem_allitjuk_be(int value)
 {
-  return "\\textit{" + std::to_string(value) + "}";
+  return std::to_string(value);
 }
 
 std::string hiba_megjavitjuk(int value)
 {
-  return "\\underline{\\textbf{" + std::to_string(value) + "}}";
+  return "$" + std::to_string(value) + "^*$";
+  // return "\\underline{\\textbf{" + std::to_string(value) + "}}";
 }
 
-void print_in_latexformat(std::string output, const std::vector<std::vector<int>>& res, int max,
-                          int s, int t, bool enable_comparison)
+int print_in_latexformat(std::string output, const std::vector<std::vector<int>>& res, int max,
+                         int s, int t, bool enable_comparison)
 {
   std::vector<std::vector<std::string>> results;
+  int total_count = 0;
   if (enable_comparison && isThereValueToCompare(s, t))
   {
     std::vector<std::vector<int>> upper_bounds = getBestUpperBounds(s, t);
@@ -187,24 +190,39 @@ void print_in_latexformat(std::string output, const std::vector<std::vector<int>
     bool is_fixValue_there = isThereFixValueToCompare(s, t);
     if (is_fixValue_there) fix_known = getBestFixValues(s, t);
     results.resize(res.size(), std::vector<std::string>(res[0].size(), ""));
+    int ismert_es_beallitjuk_count = 0;
+    int ismert_es_nem_allitjuk_be_count = 0;
+    int nem_ismert_es_beallitjuk_count = 0;
+    int nem_ismert_es_nem_allitjuk_be_count = 0;
+    int hiba_megjavitjuk_count = 0;
+
     for (size_t i = 0; i < res.size(); i++)
     {
       for (size_t j = 0; j < res[i].size(); j++)
       {
         if (res[i][j] > 0)
         {
+          bool counts = (i >= s - 2 && j >= t - 2);
+          if (counts) total_count++;
           if (is_fixValue_there && fix_known[i][j] > 0)
           {
             if (res[i][j] >= fix_known[i][j])
             {
               if (res[i][j] > fix_known[i][j])
+              {
                 results[i][j] = hiba_megjavitjuk(res[i][j]);
+                if (counts) hiba_megjavitjuk_count++;
+              }
               else
+              {
                 results[i][j] = ismert_es_beallitjuk(res[i][j]);
+                if (counts) ismert_es_beallitjuk_count++;
+              }
             }
             else
             {
               results[i][j] = ismert_es_nem_allitjuk_be(res[i][j]);
+              if (counts) ismert_es_nem_allitjuk_be_count++;
             }
           }
           else
@@ -212,18 +230,33 @@ void print_in_latexformat(std::string output, const std::vector<std::vector<int>
             if (res[i][j] >= upper_bounds[i][j])
             {
               if (res[i][j] > upper_bounds[i][j])
+              {
                 results[i][j] = hiba_megjavitjuk(res[i][j]);
+                if (counts) hiba_megjavitjuk_count++;
+              }
               else
+              {
                 results[i][j] = nem_ismert_es_beallitjuk(res[i][j]);
+                if (counts) nem_ismert_es_beallitjuk_count++;
+              }
             }
             else
             {
               results[i][j] = nem_ismert_es_nem_allitjuk_be(res[i][j]);
+              if (counts) nem_ismert_es_nem_allitjuk_be_count++;
             }
           }
         }
       }
     }
+    std::cout << "K" << s << "," << t << " statistics:" << std::endl;
+    std::cout << "Total count: " << total_count << std::endl;
+    std::cout << "ismert_es_beallitjuk: " << ismert_es_beallitjuk_count << std::endl;
+    std::cout << "ismert_es_nem_allitjuk_be: " << ismert_es_nem_allitjuk_be_count << std::endl;
+    std::cout << "nem_ismert_es_beallitjuk: " << nem_ismert_es_beallitjuk_count << std::endl;
+    std::cout << "nem_ismert_es_nem_allitjuk_be: " << nem_ismert_es_nem_allitjuk_be_count
+              << std::endl;
+    std::cout << "hiba_megjavitjuk: " << hiba_megjavitjuk_count << std::endl;
   }
   else
   {
@@ -236,7 +269,9 @@ void print_in_latexformat(std::string output, const std::vector<std::vector<int>
       }
     }
   }
+
   std::ofstream outfile(output);
+
   std::string start = generate_latex_header(t, max);
   std::string end = generate_latex_footer(s, t);
   outfile << start << std::endl;
@@ -257,15 +292,18 @@ void print_in_latexformat(std::string output, const std::vector<std::vector<int>
   }
   outfile << end;
   outfile.close();
+  return total_count;
 }
 
 int main(int argc, char* argv[])
 {
+  int total_count = 0;
   for (int s = 2; s <= 6; s++)
   {
     for (int t = s; t <= 6; t++)
     {
       bool enable_comparison = true;
+
       std::string pathOfResults =
           "./../../../output/K" + std::to_string(s) + std::to_string(t) + "/current_results.txt";
       std::vector<std::vector<int>> res = readMatrix(pathOfResults);
@@ -273,11 +311,12 @@ int main(int argc, char* argv[])
       std::string latex =
           "./generated_tables/K" + std::to_string(s) + std::to_string(t) + "_results_latex.tex";
       std::string readme =
-          "./readme_tables/K" + std::to_string(s) + std::to_string(t) + "_results_readme.txt";
-      print_in_latexformat(latex, res, maxSize, s, t, enable_comparison);
+          "./readme_tables/K" + std::to_string(s) + std::to_string(t) + "_results_readme.md";
+      total_count += print_in_latexformat(latex, res, maxSize, s, t, enable_comparison);
       print_in_readme_format(readme, res, maxSize, s, t);
     }
   }
+  std::cout << total_count;
 
   return 0;
 }

@@ -1,8 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set "S=5"
-set "T=5"
+set "S=2"
+set "T=2"
 
 set "test1_KST=K%S%%T%"
 set "test2_KST=K%S%%T%"
