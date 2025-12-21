@@ -1,5 +1,19 @@
 # Zarankiewicz
 
+Ez a projekt a Zarankiewicz-féle szám alsó korlátainak becslését célozza meg **randomizált programozás** segítségével.
+
+A Zarankiewicz-probléma egy klasszikus kérdés a kombinatorikában: adott egy $K_{s,t}$-mentes (m, n) méretű páros gráf – mi a maximális élszám, amit ilyen gráf tartalmazhat?  
+Ez a program különféle **heurisztikus és randomizált eljárásokkal** próbál jó közelítéseket találni az $Z_{s,t}(m, n)$ értékekre.
+
+## Telepítés
+
+1. Klónozd a repót:
+   ```bash
+   git clone https://github.com/balazsborsik/Zarankiewicz.git
+   ```
+
+Az eredmények a *output/KST* mappában vannak a hozzájuk tartozó gráfok pedig a *output/KST/graphs* mappában. Vagy az $s=2,t=2$-re alábbi táblázatban.
+
 | m \ n | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **2** | [3](output/K22/graphs/Z2_2_2_2_3.txt) |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
