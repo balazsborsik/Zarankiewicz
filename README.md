@@ -2,7 +2,8 @@
 
 Ez a projekt a Zarankiewicz-féle szám alsó korlátainak becslését célozza meg **randomizált programozás** segítségével.
 
-A Zarankiewicz-probléma egy klasszikus kérdés a kombinatorikában: adott egy $K_{s,t}$-mentes (m, n) méretű páros gráf – mi a maximális élszám, amit ilyen gráf tartalmazhat?  
+A Zarankiewicz-probléma egy klasszikus kérdés a kombinatorikában: adott egy $K_{s,t}$-mentes (m, n) méretű páros gráf – mi a maximális élszám, amit ilyen gráf tartalmazhat?
+A problémát, program felépítését az alábbi [dolgozat](Zarankiewiczszamok-also-becslese-szemi-random-Dolgozat.pdf) taglalja részletesebben.
 Ez a program különféle **heurisztikus és randomizált eljárásokkal** próbál jó közelítéseket találni az $Z_{s,t}(m, n)$ értékekre.
 
 ## Telepítés
