@@ -13,34 +13,30 @@ void K23Store::clear()
 
 bool K23Store::createsKst(const Graph& adj, int u, int v) const
 {
-  int u_cands[Constants::MAX_SIZE];
-  int u_cands_size = 0;
-
-  for (int i = 0; i < adj.m; ++i)
+  int m = adj.m;
+  int n = adj.n;
+  for (int u2 = 0; u2 < m; ++u2)
   {
-    if (i != u && adj[i][v])
+    if (u2 == u) continue;
+    if (adj[u2][v])
     {
-      u_cands[u_cands_size++] = i;
-    }
-  }
-
-  if (u_cands_size < (S_ - 1)) return false;
-
-  for (int i = 0; i < u_cands_size; ++i)
-  {
-    int common_v_count = 0;
-    for (int node_v = 0; node_v < adj.n; ++node_v)
-    {
-      if (node_v == v) continue;
-    
-      if (adj[u][node_v] && adj[u_cands[i]][node_v])
+      for (int v2 = 0; v2 < n; ++v2)
       {
-        common_v_count++;
-        if (common_v_count >= (T_ - 1)) return true;
+        if (v2 == v) continue;
+        if (adj[u][v2] && adj[u2][v2])
+        {
+          for (int v3 = v2 + 1; v3 < n; ++v3)
+          {
+            if (v3 == v) continue;
+            if (adj[u][v3] && adj[u2][v3])
+            {
+              return true;
+            }
+          }
+        }
       }
     }
   }
-
   return false;
 }
 
@@ -65,26 +61,25 @@ void K23Store::storeKst(const Graph& adj, int u, int v)
   for (int i = 0; i < u_cands_size; ++i)
   {
     v_cands_size = 0;
-    
+
     for (int node_v = 0; node_v < adj.n; ++node_v)
     {
       if (node_v == v) continue;
-    
+
       if (adj[u][node_v] && adj[u_cands[i]][node_v])
       {
         v_cands[v_cands_size++] = node_v;
       }
     }
-    
+
     if (v_cands_size < (T_ - 1)) continue;
-    
+
     for (int a = 0; a < v_cands_size; ++a)
     {
       for (int b = a + 1; b < v_cands_size; ++b)
       {
-        Kst<S_, T_> created({u, u_cands[i]},
-                            {v, v_cands[a], v_cands[b]});
-        
+        Kst<S_, T_> created({u, u_cands[i]}, {v, v_cands[a], v_cands[b]});
+
         for (int x = 0; x < S_; ++x)
         {
           for (int y = 0; y < T_; ++y)
@@ -92,7 +87,7 @@ void K23Store::storeKst(const Graph& adj, int u, int v)
             edges_in_circles_.adj[created.u_arr[x]][created.v_arr[y]]++;
           }
         }
-        
+
         circles_.push_back(created);
       }
     }

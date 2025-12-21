@@ -16,10 +16,12 @@ bool K22Store::createsKst(const Graph& adj, int u, int v) const
   int n = adj.n;
   for (int u2 = 0; u2 < m; ++u2)
   {
+    if (u2 == u) continue;
     if (adj[u2][v])
     {
       for (int v2 = 0; v2 < n; ++v2)
       {
+        if (v2 == v) continue;
         if (adj[u][v2] && adj[u2][v2])
         {
           return true;
