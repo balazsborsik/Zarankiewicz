@@ -1,6 +1,6 @@
 # Zarankiewicz
 
-Ez a projekt a Zarankiewicz-féle szám alsó korlátainak becslését célozza meg **randomizált programozás** segítségével.
+Ez a projekt a Zarankiewicz-szám alsó korlátainak becslését célozza meg **randomizált programozás** segítségével, az alábbi próbálkozás folytatása: [Önálló labor](https://github.com/balazsborsik/Onlab).
 
 A Zarankiewicz-probléma egy klasszikus kérdés a kombinatorikában: adott egy $K_{s,t}$-mentes (m, n) méretű páros gráf – mi a maximális élszám, amit ilyen gráf tartalmazhat?
 A problémát, program felépítését az alábbi [dolgozat](Zarankiewiczszamok-also-becslese-szemi-random-Dolgozat.pdf) taglalja részletesebben.
